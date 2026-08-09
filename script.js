@@ -1,12 +1,33 @@
 // Acboss — Flat Vector Graphic & Telemetry Logic with Interactive Motion & Auto Carousel
 
 document.addEventListener('DOMContentLoaded', () => {
+  initProductGallery();
   initArchitectureInspector();
   initComfortSimulator();
   initPreorderForm();
   initCard3DTiltEffects();
   initSleepCarousel();
 });
+
+function initProductGallery() {
+  const image = document.getElementById('mainProductImg');
+  const buttons = document.querySelectorAll('[data-product-src]');
+
+  if (!image || !buttons.length) return;
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      image.src = button.dataset.productSrc;
+      image.alt = button.dataset.productAlt;
+
+      buttons.forEach((item) => {
+        const selected = item === button;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
+    });
+  });
+}
 
 /* -------------------------------------------------------------
  * 1. Auto-Playing Sleep Paradox Carousel
