@@ -1,4 +1,4 @@
-// Acboss — Flat Vector Graphic & Telemetry Logic with Interactive Motion & Auto Carousel
+// ACBOSS — Flat Vector Graphic & Telemetry Logic with Interactive Motion & Auto Carousel
 
 document.addEventListener('DOMContentLoaded', () => {
   initArchitectureInspector();
@@ -100,7 +100,7 @@ const ARCH_DATA = {
   ble_proximity: {
     title: "BLE Mobile Proximity Sensing",
     subtitle: "Bluetooth Low Energy RSSI Beacon Engine",
-    description: "Measures signal strength (RSSI) from your paired Acboss mobile app. Detects when you enter or leave the room, triggering instant personalized cooling presets.",
+    description: "Measures signal strength (RSSI) from your paired ACBOSS mobile app. Detects when you enter or leave the room, triggering instant personalized cooling presets.",
     pinouts: [
       { pin: "BLE_ANT", function: "2.4GHz Bluetooth Antenna", status: "SCANNING (-45 dBm)" },
       { pin: "BEACON_ID", function: "Encrypted Mobile UUID", status: "PAIRED (In Range)" },
@@ -284,7 +284,7 @@ function initComfortSimulator() {
     }
     ctx.stroke();
 
-    // 2. Acboss Autopilot Curve
+    // 2. ACBOSS Autopilot Curve
     ctx.strokeStyle = '#00897b';
     ctx.lineWidth = 4;
     ctx.beginPath();

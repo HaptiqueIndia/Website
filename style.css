@@ -1,4 +1,4 @@
-/* Acboss — Flat Vector Graphic Design System with Dynamic Micro-Animations */
+/* ACBOSS — Flat Vector Graphic Design System with Dynamic Micro-Animations */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -1377,7 +1377,7 @@ footer {
 }
 
 
-/* AC Boss product story page */
+/* ACBOSS product story page */
 .ac-product-page { --ac-ink:#20201f; --ac-muted:#676761; --ac-paper:#f7f6f2; --ac-surface:#e8e5de; --ac-line:#d7d4cd; --ac-coral:#d85f48; background:var(--ac-paper); color:var(--ac-ink); font-family:'DM Sans',sans-serif; line-height:1.5; }
 .ac-product-page * { box-sizing:border-box; }
 .ac-product-page h1,.ac-product-page h2,.ac-product-page h3,.ac-wordmark { font-family:'Manrope',sans-serif; }
@@ -1454,7 +1454,7 @@ footer {
 }
 @media (prefers-reduced-motion:reduce) { .ac-product-page *,.ac-product-page *::before,.ac-product-page *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
 
-/* AC Boss homepage — warm editorial companion to the product story */
+/* ACBOSS homepage — warm editorial companion to the product story */
 body:has(.ac-home-hero) {
   --ac-home-ink:#20201f;
   --ac-home-muted:#676761;
