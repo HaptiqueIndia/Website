@@ -154,7 +154,11 @@ function initArchitectureInspector() {
     const data = ARCH_DATA[key];
     if (!data) return;
 
-    nodes.forEach(n => n.classList.toggle('active', n.dataset.node === key));
+    nodes.forEach((node) => {
+      const selected = node.dataset.node === key;
+      node.classList.toggle('active', selected);
+      node.setAttribute('aria-pressed', String(selected));
+    });
 
     if (inspectorPanel) {
       inspectorPanel.style.transform = 'scale(0.98)';
@@ -198,6 +202,9 @@ function initComfortSimulator() {
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const outsideSlider = document.getElementById('sliderOutside');
   const targetSlider = document.getElementById('sliderTarget');
   const outsideValEl = document.getElementById('valOutside');
@@ -268,7 +275,7 @@ function initComfortSimulator() {
     ctx.font = 'bold 12px JetBrains Mono';
     ctx.fillText(`TARGET: ${targetTemp.toFixed(1)}°C`, 10, targetY - 8);
 
-    phaseOffset += 0.03;
+    if (!reduceMotion) phaseOffset += 0.03;
 
     // 1. Traditional AC Curve
     ctx.strokeStyle = '#ff6e40';
@@ -300,7 +307,7 @@ function initComfortSimulator() {
 
     // 3. Flowing Pulse Particles
     particles.forEach(p => {
-      p.x += p.speed;
+      if (!reduceMotion) p.x += p.speed;
       if (p.x > width) p.x = 0;
 
       const freq = 0.02;
@@ -314,7 +321,13 @@ function initComfortSimulator() {
       ctx.fill();
     });
 
-    animationFrame = requestAnimationFrame(draw);
+    if (!reduceMotion) animationFrame = requestAnimationFrame(draw);
+  }
+
+  if (reduceMotion) {
+    [outsideSlider, targetSlider].forEach((slider) => {
+      if (slider) slider.addEventListener('input', draw);
+    });
   }
 
   draw();
@@ -324,6 +337,9 @@ function initComfortSimulator() {
  * 4. Interactive Card Mouseover 3D Tilt / Parallax Effect
  * ------------------------------------------------------------- */
 function initCard3DTiltEffects() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
   const cards = document.querySelectorAll('.hw-card, .vector-stage-card, .story-card-grid');
 
   cards.forEach(card => {
@@ -345,65 +361,6 @@ function initCard3DTiltEffects() {
       card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
     });
   });
-}
-
-/* -------------------------------------------------------------
- * 5. Pre-Order Form Handling
- * ------------------------------------------------------------- */
-function initPreorderForm() {
-  const form = document.getElementById('preorderForm');
-  const confirmBox = document.getElementById('preorderConfirmation');
-
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const city = document.getElementById('city').value.trim();
-
-    let valid = true;
-
-    if (!name) {
-      showError('nameError', 'Please enter your full name.');
-      valid = false;
-    } else {
-      clearError('nameError');
-    }
-
-    if (!email || !email.includes('@')) {
-      showError('emailError', 'Please enter a valid email address.');
-      valid = false;
-    } else {
-      clearError('emailError');
-    }
-
-    if (!city) {
-      showError('cityError', 'Please enter your city.');
-      valid = false;
-    } else {
-      clearError('cityError');
-    }
-
-    if (valid) {
-      form.style.display = 'none';
-      if (confirmBox) {
-        confirmBox.style.display = 'block';
-        confirmBox.style.animation = 'float-bob 3s ease-in-out infinite';
-      }
-    }
-  });
-}
-
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = msg;
-}
-
-function clearError(id) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = '';
 }
 
 function initProductGallery() {
