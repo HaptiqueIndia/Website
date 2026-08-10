@@ -1462,6 +1462,7 @@ body:has(.ac-home-hero) {
   --ac-home-surface:#e8e5de;
   --ac-home-line:#d7d4cd;
   --ac-home-coral:#d85f48;
+  --ac-home-coral-ink:#9b3829;
   background:var(--ac-home-paper);
   background-image:none;
   color:var(--ac-home-ink);
@@ -1475,11 +1476,12 @@ body:has(.ac-home-hero) {
 .header:has(+ main .ac-home-hero) .nav-links a { color:var(--ac-home-ink); font-size:.86rem; font-weight:600; }
 .header:has(+ main .ac-home-hero) .nav-links a::after { display:none; }
 .header:has(+ main .ac-home-hero) .nav-links a:hover { color:var(--ac-home-coral); }
+body:has(.ac-home-hero) :focus-visible { outline:3px solid var(--ac-home-coral-ink); outline-offset:4px; }
 
 .ac-home-hero,.ac-home-benefits,.ac-home-story,.ac-home-details,.ac-home-faq,.ac-home-interest { font-family:var(--font-main); }
 .ac-home-hero h1,.ac-home-benefits h2,.ac-home-story h2,.ac-home-details h2,.ac-home-faq h2,.ac-home-interest h2 { color:var(--ac-home-ink); font-size:clamp(2.5rem,5vw,5.6rem); font-weight:800; letter-spacing:-.075em; line-height:.98; }
 .ac-home-hero { max-width:1440px; min-height:min(760px,calc(100vh - 76px)); margin:auto; padding:clamp(64px,10vw,144px) 8vw; display:grid; grid-template-columns:.8fr 1.2fr; align-items:center; gap:clamp(36px,8vw,120px); }
-.ac-home-hero > div > p:first-child { color:var(--ac-home-coral); font-size:.72rem; font-weight:800; letter-spacing:.14em; margin:0 0 18px; }
+.ac-home-hero > div > p:first-child { color:var(--ac-home-coral-ink); font-size:.72rem; font-weight:800; letter-spacing:.14em; margin:0 0 18px; }
 .ac-home-hero h1 { max-width:620px; margin:0; }
 .ac-home-hero h1 + p { max-width:430px; margin:28px 0 34px; color:var(--ac-home-muted); font-size:1.1rem; }
 .ac-home-hero a,.ac-home-interest a { display:inline-flex; min-height:50px; align-items:center; justify-content:center; padding:0 24px; border-radius:999px; background:var(--ac-home-ink); color:var(--ac-home-paper); font-size:.88rem; font-weight:700; text-decoration:none; transition:transform .25s ease,background-color .25s ease; }
@@ -1494,7 +1496,7 @@ body:has(.ac-home-hero) {
 .ac-home-benefits ul { display:grid; grid-template-columns:repeat(3,1fr); list-style:none; border-top:1px solid var(--ac-home-line); }
 .ac-home-benefits li { min-height:190px; margin-right:28px; padding:28px 28px 20px 0; border-right:1px solid var(--ac-home-line); color:var(--ac-home-muted); font-size:1.05rem; line-height:1.45; }
 .ac-home-benefits li:last-child { margin-right:0; border-right:0; }
-.ac-home-benefits li::before { content:'0' counter(ac-home-benefit); counter-increment:ac-home-benefit; display:block; margin-bottom:54px; color:var(--ac-home-coral); font-size:.78rem; font-weight:800; }
+.ac-home-benefits li::before { content:'0' counter(ac-home-benefit); counter-increment:ac-home-benefit; display:block; margin-bottom:54px; color:var(--ac-home-coral-ink); font-size:.78rem; font-weight:800; }
 .ac-home-benefits ul { counter-reset:ac-home-benefit; }
 
 .ac-home-story { display:grid; grid-template-columns:1fr 1fr; min-height:660px; align-items:center; background:var(--ac-home-paper); }
@@ -1526,7 +1528,7 @@ body:has(.ac-home-hero) {
 .ac-home-faq details + details { border-top:0; }
 .ac-home-interest { min-height:440px; padding:clamp(72px,9vw,132px) 8vw; background:var(--ac-home-coral); }
 .ac-home-interest h2 { max-width:680px; margin:0 0 24px; color:#201e1c; }
-.ac-home-interest p { max-width:480px; margin:0 0 32px; color:rgba(32,30,28,.78); font-size:1.08rem; }
+.ac-home-interest p { max-width:480px; margin:0 0 32px; color:#1b1917; font-size:1.08rem; }
 .ac-home-interest a { background:#201e1c; }
 .ac-home-interest a:hover { background:#f7f6f2; color:#201e1c; }
 body:has(.ac-home-hero) footer { padding:28px 5vw; border-top:1px solid var(--ac-home-line); background:var(--ac-home-paper); color:var(--ac-home-muted); font-size:.82rem; }
