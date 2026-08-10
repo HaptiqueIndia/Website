@@ -1453,3 +1453,91 @@ footer {
   .ac-compatibility { display:block; }.ac-compatibility .ac-button { margin-top:32px; }.ac-interest { grid-template-columns:1fr; gap:34px; }.ac-interest img { width:140px; }.ac-footer { align-items:flex-start; flex-direction:column; }
 }
 @media (prefers-reduced-motion:reduce) { .ac-product-page *,.ac-product-page *::before,.ac-product-page *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
+
+/* AC Boss homepage — warm editorial companion to the product story */
+body:has(.ac-home-hero) {
+  --ac-home-ink:#20201f;
+  --ac-home-muted:#676761;
+  --ac-home-paper:#f7f6f2;
+  --ac-home-surface:#e8e5de;
+  --ac-home-line:#d7d4cd;
+  --ac-home-coral:#d85f48;
+  --ac-home-coral-ink:#9b3829;
+  background:var(--ac-home-paper);
+  background-image:none;
+  color:var(--ac-home-ink);
+}
+.header:has(+ main .ac-home-hero) { background:rgba(247,246,242,.94); border-bottom:1px solid var(--ac-home-line); box-shadow:none; }
+.header:has(+ main .ac-home-hero):hover { box-shadow:none; }
+.header:has(+ main .ac-home-hero) .nav-container { max-width:1440px; padding:22px 5vw; }
+.header:has(+ main .ac-home-hero) .brand-logo { color:var(--ac-home-ink); font-size:1.2rem; letter-spacing:-.075em; }
+.header:has(+ main .ac-home-hero) .brand-logo:hover { transform:none; }
+.header:has(+ main .ac-home-hero) .nav-links { gap:24px; }
+.header:has(+ main .ac-home-hero) .nav-links a { color:var(--ac-home-ink); font-size:.86rem; font-weight:600; }
+.header:has(+ main .ac-home-hero) .nav-links a::after { display:none; }
+.header:has(+ main .ac-home-hero) .nav-links a:hover { color:var(--ac-home-coral); }
+body:has(.ac-home-hero) :focus-visible { outline:3px solid var(--ac-home-coral-ink); outline-offset:4px; }
+
+.ac-home-hero,.ac-home-benefits,.ac-home-story,.ac-home-details,.ac-home-faq,.ac-home-interest { font-family:var(--font-main); }
+.ac-home-hero h1,.ac-home-benefits h2,.ac-home-story h2,.ac-home-details h2,.ac-home-faq h2,.ac-home-interest h2 { color:var(--ac-home-ink); font-size:clamp(2.5rem,5vw,5.6rem); font-weight:800; letter-spacing:-.075em; line-height:.98; }
+.ac-home-hero { max-width:1440px; min-height:min(760px,calc(100vh - 76px)); margin:auto; padding:clamp(64px,10vw,144px) 8vw; display:grid; grid-template-columns:.8fr 1.2fr; align-items:center; gap:clamp(36px,8vw,120px); }
+.ac-home-hero > div > p:first-child { color:var(--ac-home-coral-ink); font-size:.72rem; font-weight:800; letter-spacing:.14em; margin:0 0 18px; }
+.ac-home-hero h1 { max-width:620px; margin:0; }
+.ac-home-hero h1 + p { max-width:430px; margin:28px 0 34px; color:var(--ac-home-muted); font-size:1.1rem; }
+.ac-home-hero a,.ac-home-interest a { display:inline-flex; min-height:50px; align-items:center; justify-content:center; padding:0 24px; border-radius:999px; background:var(--ac-home-ink); color:var(--ac-home-paper); font-size:.88rem; font-weight:700; text-decoration:none; transition:transform .25s ease,background-color .25s ease; }
+.ac-home-hero a:hover,.ac-home-interest a:hover { background:var(--ac-home-coral); transform:translateY(-2px); }
+.ac-home-hero figure { margin:0; overflow:hidden; background:#d6d2ca; }
+.ac-home-hero figure img { display:block; width:100%; min-height:470px; object-fit:cover; }
+.ac-home-hero figcaption,.ac-home-story figcaption { color:var(--ac-home-muted); font-size:.78rem; padding:12px 16px; }
+
+.ac-home-benefits,.ac-home-faq { padding:clamp(72px,9vw,132px) 8vw; border-top:1px solid var(--ac-home-line); }
+.ac-home-benefits { background:#fbfaf7; }
+.ac-home-benefits h2 { max-width:650px; margin:0 0 50px; }
+.ac-home-benefits ul { display:grid; grid-template-columns:repeat(3,1fr); list-style:none; border-top:1px solid var(--ac-home-line); }
+.ac-home-benefits li { min-height:190px; margin-right:28px; padding:28px 28px 20px 0; border-right:1px solid var(--ac-home-line); color:var(--ac-home-muted); font-size:1.05rem; line-height:1.45; }
+.ac-home-benefits li:last-child { margin-right:0; border-right:0; }
+.ac-home-benefits li::before { content:'0' counter(ac-home-benefit); counter-increment:ac-home-benefit; display:block; margin-bottom:54px; color:var(--ac-home-coral-ink); font-size:.78rem; font-weight:800; }
+.ac-home-benefits ul { counter-reset:ac-home-benefit; }
+
+.ac-home-story { display:grid; grid-template-columns:1fr 1fr; min-height:660px; align-items:center; background:var(--ac-home-paper); }
+.ac-home-story > div { padding:clamp(64px,10vw,150px); }
+.ac-home-story h2 { margin:0 0 26px; }
+.ac-home-story p { max-width:400px; color:var(--ac-home-muted); }
+.ac-home-story figure { min-height:660px; height:100%; margin:0; overflow:hidden; background:#ddd9d0; }
+.ac-home-story figure img { display:block; width:100%; height:100%; min-height:660px; object-fit:cover; }
+.ac-home-story:nth-of-type(4) { background:#fbfaf7; }
+.ac-home-story:nth-of-type(4) > div { order:2; }
+.ac-home-story:nth-of-type(4) figure { order:1; }
+.ac-home-story--dark { background:#191919; color:#f5f2eb; }
+.ac-home-story--dark h2 { color:#f5f2eb; }
+.ac-home-story--dark p,.ac-home-story--dark figcaption { color:#c5c0b7; }
+.ac-home-story--dark figure { background:#111; }
+
+.ac-home-details { padding:clamp(72px,9vw,132px) 8vw; border-top:1px solid var(--ac-home-line); background:var(--ac-home-surface); }
+.ac-home-details h2 { max-width:660px; margin:0 0 48px; }
+.ac-home-details > div { display:grid; grid-template-columns:minmax(240px,.8fr) minmax(0,1.2fr); gap:clamp(36px,8vw,120px); align-items:center; border-top:1px solid var(--ac-home-line); padding-top:40px; }
+.ac-home-details img { display:block; width:min(100%,380px); margin:auto; }
+.ac-home-details details,.ac-home-faq details { border-bottom:1px solid var(--ac-home-line); padding:22px 0; }
+.ac-home-details summary,.ac-home-faq summary { cursor:pointer; font-weight:700; list-style:none; }
+.ac-home-details summary::-webkit-details-marker,.ac-home-faq summary::-webkit-details-marker { display:none; }
+.ac-home-details details p,.ac-home-faq details p { max-width:620px; margin:18px 0 0; color:var(--ac-home-muted); }
+
+.ac-home-faq { background:#fbfaf7; }
+.ac-home-faq h2 { max-width:680px; margin:0 0 50px; }
+.ac-home-faq details { max-width:920px; border-top:1px solid var(--ac-home-line); }
+.ac-home-faq details + details { border-top:0; }
+.ac-home-interest { min-height:440px; padding:clamp(72px,9vw,132px) 8vw; background:var(--ac-home-coral); }
+.ac-home-interest h2 { max-width:680px; margin:0 0 24px; color:#201e1c; }
+.ac-home-interest p { max-width:480px; margin:0 0 32px; color:#1b1917; font-size:1.08rem; }
+.ac-home-interest a { background:#201e1c; }
+.ac-home-interest a:hover { background:#f7f6f2; color:#201e1c; }
+body:has(.ac-home-hero) footer { padding:28px 5vw; border-top:1px solid var(--ac-home-line); background:var(--ac-home-paper); color:var(--ac-home-muted); font-size:.82rem; }
+
+@media (max-width:760px) {
+  .header:has(+ main .ac-home-hero) .nav-container { min-height:64px; padding:0 24px; }.header:has(+ main .ac-home-hero) .nav-links { display:none; }
+  .ac-home-hero,.ac-home-story,.ac-home-details > div { grid-template-columns:1fr; }.ac-home-hero { min-height:0; padding:72px 7vw 0; }.ac-home-hero figure { margin-top:48px; }
+  .ac-home-hero figure img,.ac-home-story figure,.ac-home-story figure img { min-height:420px; }.ac-home-story > div { padding:78px 8vw; }.ac-home-story:nth-of-type(4) > div { order:1; }.ac-home-story:nth-of-type(4) figure { order:2; }
+  .ac-home-benefits ul { grid-template-columns:1fr; }.ac-home-benefits li { min-height:auto; margin:0; padding:28px 0; border-right:0; border-bottom:1px solid var(--ac-home-line); }.ac-home-benefits li::before { margin-bottom:24px; }
+  .ac-home-details > div { gap:36px; }.ac-home-details img { width:min(100%,300px); }
+}
+@media (prefers-reduced-motion:reduce) { body:has(.ac-home-hero) *,body:has(.ac-home-hero) *::before,body:has(.ac-home-hero) *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }

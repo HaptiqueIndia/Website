@@ -3,727 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acboss — Local Edge-AI AC Autopilot Hardware Platform</title>
-  <meta name="description" content="Autonomous Edge-AI hardware controller for Split ACs. Continuous room comfort, 24% energy savings, BLE mobile proximity sensing, zero cloud latency.">
-  
-  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <title>AC Boss — Comfort that stays close to you</title>
+  <meta name="description" content="AC Boss helps you explore a calmer, more considered approach to bedroom comfort.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- Header -->
   <header class="header">
-    <div class="nav-container">
-      <a href="#top" class="brand-logo">
-        Acboss
-        <span class="brand-chip">EDGE_AUTOPILOT</span>
-      </a>
-      
-      <div class="status-indicator">
-        <span class="status-dot"></span>
-        <span>SYS: LOCAL_EDGE_ACTIVE</span>
-      </div>
-
+    <nav class="nav-container" aria-label="Primary navigation">
+      <a href="#home-hero" class="brand-logo" aria-label="AC Boss home">AC Boss</a>
       <ul class="nav-links">
-        <li><a href="#why-this">Thesis & Stories</a></li>
-        <li><a href="#setup">3-Step Setup</a></li>
-        <li><a href="#versatility">Mount & Power</a></li>
-        <li><a href="#architecture">Hardware Platform</a></li>
-        <li><a href="#simulator">Simulator</a></li>
-        <li><a href="#comparison">Comparison</a></li>
-        <li><a href="#faq">FAQ</a></li>
-        <li><a href="#preorder" class="btn btn-coral">Pre-Order Early Unit</a></li>
+        <li><a href="#home-comfort">Comfort</a></li>
+        <li><a href="#home-mounting">Mounting</a></li>
+        <li><a href="#home-technology">Technology</a></li>
+        <li><a href="#home-faq">Questions</a></li>
+        <li><a href="mailto:hello@acboss.com">Talk to us</a></li>
       </ul>
-    </div>
+    </nav>
   </header>
 
   <main>
-    <!-- HERO SECTION -->
-    <section id="top" class="hero-section" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <div class="hero-tag">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          LOCAL EDGE INTELLIGENCE FOR SPLIT ACs
-        </div>
-
-        <h1 id="hero-title">Your AC, finally on <span class="coral-highlight">autopilot.</span></h1>
-        <p class="hero-subtitle">Acboss senses room temperature, humidity, 24GHz mmWave radar presence, and BLE mobile app proximity—adjusting your Split AC automatically so you never wake up freezing again.</p>
-        
-        <div class="hero-actions">
-          <a href="#preorder" class="btn btn-coral">Reserve Early Unit →</a>
-          <a href="#architecture" class="btn btn-teal">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-            Explore Hardware
-          </a>
-        </div>
-
-        <div class="hero-specs-row">
-          <div class="hero-spec-item">
-            <span class="hero-spec-num">MCU</span>
-            <span class="hero-spec-label">Wi-Fi + Thread/Zigbee</span>
-          </div>
-          <div class="hero-spec-item">
-            <span class="hero-spec-num">BLE 5.0</span>
-            <span class="hero-spec-label">App Proximity</span>
-          </div>
-          <div class="hero-spec-item">
-            <span class="hero-spec-num">±0.1°C</span>
-            <span class="hero-spec-label">Precision Sensing</span>
-          </div>
-          <div class="hero-spec-item">
-            <span class="hero-spec-num">24%</span>
-            <span class="hero-spec-label">Max Power Saved</span>
-          </div>
-        </div>
+    <section class="ac-home-hero" id="home-hero" aria-labelledby="home-hero-title">
+      <div>
+        <p>AC BOSS</p>
+        <h1 id="home-hero-title">Comfort that stays close to you.</h1>
+        <p>A thoughtful companion for the room where you rest.</p>
+        <a href="#home-comfort">Explore the idea</a>
       </div>
-
-      <!-- Vector Hero Graphic Stage -->
-      <div class="vector-stage-card">
-        <svg class="hero-illustration-svg" viewBox="0 0 600 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="acbossHalftone" width="16" height="16" patternUnits="userSpaceOnUse">
-              <circle cx="4" cy="4" r="2" fill="#ff6e40" opacity="0.3"/>
-              <circle cx="12" cy="12" r="2" fill="#00897b" opacity="0.25"/>
-            </pattern>
-            <linearGradient id="irPulseGrad" x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0%" stop-color="#ff6e40" stop-opacity="0.9"/>
-              <stop offset="100%" stop-color="#00897b" stop-opacity="0.3"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Halftone Background Accents -->
-          <rect x="20" y="20" width="160" height="90" rx="20" fill="url(#acbossHalftone)" />
-          <rect x="420" y="280" width="150" height="100" rx="20" fill="url(#acbossHalftone)" />
-
-          <!-- SPLIT AC UNIT -->
-          <g transform="translate(320, 30)">
-            <rect x="0" y="0" width="240" height="90" rx="12" fill="#ffffff" stroke="#00897b" stroke-width="3.5"/>
-            <rect x="15" y="62" width="210" height="16" rx="6" fill="#e0f2f1" stroke="#00897b" stroke-width="2"/>
-            <rect x="180" y="18" width="45" height="26" rx="4" fill="#004d40"/>
-            <text x="187" y="36" fill="#80cbc4" font-family="JetBrains Mono" font-size="13" font-weight="bold">23.5°</text>
-            <text x="25" y="32" fill="#00897b" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" letter-spacing="1">SPLIT AC</text>
-
-            <path d="M 30 90 Q 60 140 40 200" stroke="#80cbc4" stroke-width="3" stroke-dasharray="6 6"/>
-            <path d="M 120 90 Q 150 150 130 210" stroke="#80cbc4" stroke-width="3" stroke-dasharray="6 6"/>
-            <path d="M 210 90 Q 230 140 200 200" stroke="#80cbc4" stroke-width="3" stroke-dasharray="6 6"/>
-          </g>
-
-          <!-- ROOM SLEEPING ZONE -->
-          <g transform="translate(340, 240)">
-            <rect x="0" y="40" width="220" height="70" rx="12" fill="#ffe0b2" stroke="#00897b" stroke-width="3"/>
-            <rect x="15" y="25" width="190" height="40" rx="10" fill="#ffffff" stroke="#00897b" stroke-width="2"/>
-            <rect x="25" y="15" width="45" height="25" rx="6" fill="#e0f2f1" stroke="#00897b" stroke-width="2"/>
-            <circle cx="48" cy="22" r="7" fill="#ff6e40"/>
-            
-            <path d="M -40 -60 Q 20 -20 80 15" stroke="#ff6e40" stroke-width="2.5" stroke-dasharray="4 4"/>
-            <path d="M -20 -80 Q 50 -30 110 0" stroke="#ff6e40" stroke-width="2" stroke-dasharray="4 4"/>
-          </g>
-
-          <!-- MOBILE APP BLE PROXIMITY VECTOR -->
-          <g transform="translate(20, 280)">
-            <rect x="0" y="0" width="45" height="85" rx="8" fill="#ffffff" stroke="#00897b" stroke-width="2.5"/>
-            <rect x="5" y="10" width="35" height="60" rx="4" fill="#004d40"/>
-            <circle cx="22.5" cy="77" r="3" fill="#80cbc4"/>
-            <path d="M 50 20 Q 65 40 50 60" stroke="#00897b" stroke-width="2.5" stroke-dasharray="3 3"/>
-            <path d="M 58 12 Q 78 40 58 68" stroke="#00897b" stroke-width="2" stroke-dasharray="3 3"/>
-          </g>
-
-          <!-- REAL ACBOSS PEBBLE HARDWARE DEVICE -->
-          <g transform="translate(60, 160)">
-            <line x1="-30" y1="170" x2="220" y2="170" stroke="#00897b" stroke-width="4" stroke-linecap="round"/>
-            <rect x="25" y="25" width="130" height="130" rx="28" fill="#263238" stroke="#00897b" stroke-width="4"/>
-            <path d="M 25 115 Q 90 122 155 115 L 155 125 Q 155 155 125 155 L 55 155 Q 25 155 25 125 Z" fill="#0f172a"/>
-            <circle cx="90" cy="78" r="4" fill="#ffffff"/>
-            <circle cx="90" cy="78" r="9" fill="#ffffff" opacity="0.3"/>
-            <text x="90" y="108" text-anchor="middle" fill="#90a4ae" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" letter-spacing="1.5">ACBOSS</text>
-          </g>
-
-          <!-- IR BEAM -->
-          <path class="ir-beam" d="M 180 180 Q 280 120 350 100" stroke="url(#irPulseGrad)" stroke-width="4" stroke-linecap="round"/>
-          <path class="ir-beam" d="M 190 190 Q 290 130 360 110" stroke="url(#irPulseGrad)" stroke-width="2.5" stroke-dasharray="6 4"/>
-
-          <!-- FLOATING BADGES -->
-          <g transform="translate(40, 45)">
-            <rect x="0" y="0" width="150" height="42" rx="8" fill="#ffffff" stroke="#00897b" stroke-width="2.5"/>
-            <text x="12" y="18" fill="#004d40" font-family="JetBrains Mono" font-size="10" font-weight="bold">100% LOCAL EDGE</text>
-            <text x="12" y="32" fill="#546e7a" font-family="Plus Jakarta Sans" font-size="9" font-weight="700">Zero Cloud Latency</text>
-          </g>
-
-          <g transform="translate(200, 320)">
-            <rect x="0" y="0" width="150" height="42" rx="8" fill="#ffe0b2" stroke="#ff6e40" stroke-width="2.5"/>
-            <text x="12" y="18" fill="#d84315" font-family="JetBrains Mono" font-size="10" font-weight="extrabold">BLE PROXIMITY</text>
-            <text x="12" y="32" fill="#b45309" font-family="Plus Jakarta Sans" font-size="9" font-weight="700">App Auto-Detection</text>
-          </g>
-        </svg>
-      </div>
+      <figure>
+        <img src="assets/acboss-night-hero-v1.png" alt="AC Boss mounted in a bedroom">
+        <figcaption>Designed to sit quietly in the rhythm of your room.</figcaption>
+      </figure>
     </section>
 
-    <!-- SECTION 1: MASTER THESIS & REAL-WORLD STORIES -->
-    <section id="why-this" class="section">
-      <div class="section-header">
-        <span class="section-tag">ENGINEERING THESIS & REAL STORIES</span>
-        <h2 class="section-title">Why Your AC Overcools & How Acboss Solves It</h2>
-        <p class="section-desc">Understand the built-in AC thermostat flaw, wired thermostat barriers, and see how Acboss creates continuous real-world room comfort.</p>
-      </div>
-
-      <div class="why-this-container">
-        <!-- Problem 1: Thermal Physics Flaw -->
-        <div class="why-this-card">
-          <div class="why-card-badge">PROBLEM 1 // THERMAL PHYSICS FLAW</div>
-          <h3>The Thermostat Built in the AC</h3>
-          <p>Even a 24°C AC setting feels freezing cold after running for a while. Why? Because the thermostat built in the AC measures return air near the ceiling, <strong>not your bed</strong>.</p>
-          <p>There is a <strong>3°C to 4°C temperature difference</strong> between your bed and ceiling return air. The AC compressor keeps running aggressively until the return air hits 24°C—leaving your sleeping area at a freezing 20°C.</p>
-          
-          <div class="why-card-pill-row">
-            <span class="why-pill-highlight">BUILT-IN AC SENSOR: 24°C</span>
-            <span class="why-pill-alert">BED TEMP: 20°C (FREEZING)</span>
-          </div>
-        </div>
-
-        <!-- Problem 2: Wired Thermostat Incompatibility -->
-        <div class="why-this-card">
-          <div class="why-card-badge">PROBLEM 2 // HARDWARE CONTROL BARRIER</div>
-          <h3>Wired Thermostats Don't Work</h3>
-          <p>Traditional smart thermostats like Nest or Ecobee are built for central HVAC systems requiring 24V wired relay cables. <strong>Split ACs have zero wired thermostat ports</strong>.</p>
-          <p>To control a Split AC automatically, you need an Infrared (IR) based controller—which in reality is just a remote control. Basic IR blasters and mobile apps lack true local room sensing and occupancy radar.</p>
-
-          <div class="why-card-pill-row">
-            <span class="why-pill-alert">NEST / ECOBEE: WIRED ONLY ❌</span>
-            <span class="why-pill-highlight">SPLIT AC: INFRARED ONLY 📡</span>
-          </div>
-        </div>
-
-        <!-- Solution Banner Card -->
-        <div class="why-solution-banner">
-          <div class="why-solution-header">
-            <span class="why-solution-tag">THE ACBOSS SOLUTION</span>
-            <h3>Best of Both Worlds</h3>
-          </div>
-          <p>We built Acboss to bridge this exact gap. It places a high-precision climate sensor right at bed/couch height—measuring true occupant thermal comfort—while using an onboard 360° IR array to send instant micro-adjustments to your Split AC. No wiring, no overcooling, no cloud latency.</p>
-          
-          <div class="why-solution-features">
-            <div class="why-feature-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Bed-Level Micro-Climate Sensing</span>
-            </div>
-            <div class="why-feature-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Universal 360° Split AC IR Remote Control</span>
-            </div>
-            <div class="why-feature-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Local MCU Edge AI (Zero Cloud Latency)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Real Stories Showcase: Full-Scale Horizontal Carousel -->
-      <div id="sleep-paradox" style="margin-top: 48px;">
-        <div class="carousel-wrapper">
-          <div class="carousel-container">
-            <div class="carousel-track" id="carouselTrack">
-              
-              <!-- Slide 1: Freezing at 3 AM -->
-              <div class="carousel-slide">
-                <div class="carousel-img-container">
-                  <img src="assets/acboss-sleep-slide1-freezing.jpg" alt="Person shivering under a heavy blanket at 3 AM due to Split AC overcooling to 18C" class="carousel-img">
-                </div>
-                <div class="carousel-content">
-                  <div style="margin-bottom: 8px;">
-                    <span class="story-badge-pill" style="background: #ffe0b2; color: #d84315; border-color: #ff6e40;">3:00 AM // MIDNIGHT FREEZE</span>
-                  </div>
-                  <h3>1. Freezing Under Heavy Blankets</h3>
-                  <p>Standard Split ACs run aggressively all night without sensing human presence. By 3:00 AM, room temperatures drop to a freezing 18°C—forcing families to pull up heavy winter blankets in 40°C peak summer heat.</p>
-                  <div class="story-badges">
-                    <span class="story-badge-pill">18°C OVERCOOLING</span>
-                    <span class="story-badge-pill">DISRUPTED REM SLEEP</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 2: Sweating at 4:30 AM -->
-              <div class="carousel-slide">
-                <div class="carousel-img-container">
-                  <img src="assets/acboss-sleep-slide2-sweating.jpg" alt="Person waking up sweating at 4:30 AM after turning off the AC" class="carousel-img">
-                </div>
-                <div class="carousel-content">
-                  <div style="margin-bottom: 8px;">
-                    <span class="story-badge-pill" style="background: #fbe9e7; color: #d84315; border-color: #ff6e40;">4:30 AM // MIDNIGHT SWEAT</span>
-                  </div>
-                  <h3>2. Waking Up Drenched in Sweat</h3>
-                  <p>You wake up shivering and turn off the AC remote. Within 90 minutes, ambient humidity surges and temperatures spike to 31°C—waking you up sweating, groggy, and exhausted for the day ahead.</p>
-                  <div class="story-badges">
-                    <span class="story-badge-pill">31°C HEAT SPIKE</span>
-                    <span class="story-badge-pill">HUMIDITY SURGE</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 3: All Night Comfort with Acboss -->
-              <div class="carousel-slide">
-                <div class="carousel-img-container">
-                  <img src="assets/acboss-sleep-slide3-autopilot.jpg" alt="Person sleeping peacefully under a light sheet with Acboss micro-adjusting AC cooling to 23.5C automatically" class="carousel-img">
-                </div>
-                <div class="carousel-content">
-                  <div style="margin-bottom: 8px;">
-                    <span class="story-badge-pill" style="background: #e0f2f1; color: #004d40; border-color: #00897b;">ALL NIGHT // ACBOSS AUTOPILOT</span>
-                  </div>
-                  <h3>3. Perfect Comfort Without Heavy Blankets</h3>
-                  <p>Acboss uses 24GHz mmWave radar to monitor micro-breathing and room thermal shifts locally. It micro-adjusts your Split AC continuously—maintaining a steady 23.5°C so you sleep comfortably under a light sheet all night.</p>
-                  <div class="story-badges">
-                    <span class="story-badge-pill">23.5°C AUTOPILOT</span>
-                    <span class="story-badge-pill">NO HEAVY BLANKETS</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Carousel Navigation Controls -->
-          <div class="carousel-controls">
-            <div class="carousel-dots" id="carouselDots">
-              <div class="carousel-dot active"></div>
-              <div class="carousel-dot"></div>
-              <div class="carousel-dot"></div>
-            </div>
-
-            <div class="carousel-nav-btns">
-              <button class="carousel-btn" id="carouselPrev" aria-label="Previous Slide">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-              </button>
-              <button class="carousel-btn" id="carouselNext" aria-label="Next Slide">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <section class="ac-home-benefits" id="home-benefits" aria-labelledby="home-benefits-title">
+      <h2 id="home-benefits-title">Made for a calmer night.</h2>
+      <ul>
+        <li>Comfort begins with your room, not a generic setting.</li>
+        <li>A considered presence for the place you unwind.</li>
+        <li>Simple conversations before making a choice.</li>
+      </ul>
     </section>
 
-    <!-- SECTION: 3-STEP ZERO-FRICTION SETUP WALKTHROUGH -->
-    <section id="setup" class="section">
-      <div class="section-header">
-        <span class="section-tag">SIMPLIFIED DEPLOYMENT</span>
-        <h2 class="section-title">Up & Running in Under 2 Minutes</h2>
-        <p class="section-desc">Zero wiring, no HVAC technician required. Simply place Acboss on your nightstand and match your Split AC remote.</p>
+    <section class="ac-home-story" id="home-comfort" aria-labelledby="home-comfort-title">
+      <div>
+        <h2 id="home-comfort-title">Comfort starts where you sleep.</h2>
+        <p>Your bedroom has its own routines. AC Boss is imagined around the stillness, light, and personal rhythm of that space.</p>
       </div>
-
-      <div class="setup-steps-grid">
-        <div class="setup-step-card">
-          <div class="setup-num-badge">STEP 01</div>
-          <h3>Place Near Bed or Couch</h3>
-          <p>Set Acboss on your nightstand or side table. Placing it near your sleeping or sitting area ensures it senses true occupant micro-climate rather than ceiling return air.</p>
-        </div>
-
-        <div class="setup-step-card">
-          <div class="setup-num-badge">STEP 02</div>
-          <h3>2-Minute IR Remote Signal Match</h3>
-          <p>Press any button on your existing Split AC remote facing Acboss. Onboard 38kHz IR learner automatically detects and saves your AC remote control signals.</p>
-        </div>
-
-        <div class="setup-step-card">
-          <div class="setup-num-badge">STEP 03</div>
-          <h3>Autopilot Active (100% Local)</h3>
-          <p>Acboss begins monitoring temperature, humidity, 24GHz mmWave radar breathing, and BLE mobile app proximity—sending continuous 360° IR adjustments locally.</p>
-        </div>
-      </div>
+      <figure>
+        <img src="assets/acboss-sleep-slide3-autopilot.jpg" alt="Bedroom comfort scene">
+      </figure>
     </section>
 
-    <!-- NEW SECTION: MOUNTING & POWER VERSATILITY SHOWCASE -->
-    <section id="versatility" class="section">
-      <div class="section-header">
-        <span class="section-tag">FLEXIBLE MOUNTING & POWER OPTIONS</span>
-        <h2 class="section-title">Mount Anywhere. Power with Anything.</h2>
-        <p class="section-desc">Designed for modern bedrooms: choose between tabletop placement or wall mounting, powered by standard 5V USB-C or any portable power bank.</p>
+    <section class="ac-home-story" id="home-mounting" aria-labelledby="home-mounting-title">
+      <div>
+        <h2 id="home-mounting-title">Place it with intention.</h2>
+        <p>A wall-mounted position keeps AC Boss present when needed and unobtrusive when it is not.</p>
       </div>
-
-      <div class="setup-steps-grid">
-        <!-- Mounting Option 1: Desk / Tabletop -->
-        <div class="setup-step-card">
-          <div class="setup-num-badge" style="background: #e0f2f1; color: #004d40; border-color: #00897b;">MOUNTING 01 // DESK & NIGHTSTAND</div>
-          <h3>Tabletop & Nightstand Placement</h3>
-          <p>Set Acboss directly on your bedside table or couch stand. Its 360° omnidirectional IR lens array and weighted anti-slip base ensure perfect room coverage and bed-level sensing.</p>
-          <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="story-badge-pill" style="font-size: 0.72rem;">BED-LEVEL SENSING</span>
-            <span class="story-badge-pill" style="font-size: 0.72rem;">ANTI-SLIP BASE</span>
-          </div>
-        </div>
-
-        <!-- Mounting Option 2: Wall Mount -->
-        <div class="setup-step-card">
-          <div class="setup-num-badge" style="background: #e0f2f1; color: #004d40; border-color: #00897b;">MOUNTING 02 // WALL MOUNT</div>
-          <h3>Wall Bracket & Adhesive Mount</h3>
-          <p>Mount Acboss cleanly on any bedroom wall using the magnetic wall bracket or residue-free 3M adhesive strip. Ideal for clean wall setups with direct line-of-sight to your Split AC.</p>
-          <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="story-badge-pill" style="font-size: 0.72rem;">MAGNETIC BRACKET</span>
-            <span class="story-badge-pill" style="font-size: 0.72rem;">ADHESIVE MOUNT</span>
-          </div>
-        </div>
-
-        <!-- Power Option: Power Bank & USB-C -->
-        <div class="setup-step-card">
-          <div class="setup-num-badge" style="background: #ffe0b2; color: #d84315; border-color: #ff6e40;">POWER // 5V USB-C & POWER BANK</div>
-          <h3>Power Bank Outage Support</h3>
-          <p>Powered via standard 5V DC USB-C. Connect Acboss to any standard mobile power bank to keep your AC cooling autopilot active during summer power cuts and outages.</p>
-          <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="story-badge-pill" style="font-size: 0.72rem;">5V USB-C PORT</span>
-            <span class="story-badge-pill" style="font-size: 0.72rem;">POWER BANK READY</span>
-          </div>
-        </div>
-      </div>
+      <figure>
+        <img src="assets/acboss-night-hero-v1.png" alt="Wall-mounted AC Boss">
+      </figure>
     </section>
 
-    <!-- SECTION 2: HARDWARE ARCHITECTURE & FORM FACTOR -->
-    <section id="architecture" class="section">
-      <div class="section-header">
-        <span class="section-tag">HARDWARE PLATFORM & FORM FACTOR</span>
-        <h2 class="section-title">Tested Hardware Architecture & Design</h2>
-        <p class="section-desc">Minimalist matte black squircle pebble form factor built on tested PCB component modules.</p>
+    <section class="ac-home-story ac-home-story--dark" id="home-technology" aria-labelledby="home-technology-title">
+      <div>
+        <h2 id="home-technology-title">Technology, kept quiet.</h2>
+        <p>Behind the calm exterior is a considered technical system, designed to keep the experience focused on the room.</p>
       </div>
-
-      <!-- Real Pebble Product Form Factor Showcase -->
-      <div id="device-form" class="story-card-grid" style="grid-template-columns: 1fr 1.1fr; margin-bottom: 40px;">
-        <div class="story-content">
-          <h3>Minimalist Product Design</h3>
-          <p>Acboss is crafted with a compact pebble footprint that sits quietly on your side table or nightstand. Discreet ambient status telemetry communicates local cooling adjustments without bright, distracting displays.</p>
-          
-          <div class="hero-specs-row" style="border: none; padding-top: 12px;">
-            <div class="hero-spec-item">
-              <span class="hero-spec-num">FORM FACTOR</span>
-              <span class="hero-spec-label">Compact & Unobtrusive</span>
-            </div>
-            <div class="hero-spec-item">
-              <span class="hero-spec-num">AMBIENT</span>
-              <span class="hero-spec-label">Status Telemetry</span>
-            </div>
-            <div class="hero-spec-item">
-              <span class="hero-spec-num">360° COVERAGE</span>
-              <span class="hero-spec-label">Omnidirectional IR Base</span>
-            </div>
-          </div>
-        </div>
-
-        <img src="assets/acboss-product-pebble-vector.jpg" alt="Acboss smart AC controller hardware vector graphic" class="vector-story-img">
-      </div>
-
-      <!-- Interactive Exploded Assembly Inspector -->
-      <div class="architecture-container">
-        <div class="arch-layout">
-          
-          <!-- Node Selector Grid -->
-          <div class="arch-nodes-grid">
-            <div class="arch-node active" data-node="mcu">
-              <div class="node-chip-header">
-                <span class="node-pin">MCU // CORE</span>
-                <div class="node-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="15" x2="23" y2="15"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="15" x2="4" y2="15"/></svg>
-                </div>
-              </div>
-              <h3 class="node-title">MCU</h3>
-              <p class="node-subtitle">Dual-band Wi-Fi (5GHz/2.4GHz) + Thread/Zigbee</p>
-            </div>
-
-            <div class="arch-node" data-node="ble_proximity">
-              <div class="node-chip-header">
-                <span class="node-pin">BLE 5.0 // PROXIMITY</span>
-                <div class="node-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                </div>
-              </div>
-              <h3 class="node-title">BLE Proximity Sensing</h3>
-              <p class="node-subtitle">App Proximity Auto-Detection & RSSI</p>
-            </div>
-
-            <div class="arch-node" data-node="climate_sensor">
-              <div class="node-chip-header">
-                <span class="node-pin">I2C // SENSOR</span>
-                <div class="node-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
-                </div>
-              </div>
-              <h3 class="node-title">Precision Climate Sensor</h3>
-              <p class="node-subtitle">±0.1°C Precision | Relative Humidity</p>
-            </div>
-
-            <div class="arch-node" data-node="mmwave">
-              <div class="node-chip-header">
-                <span class="node-pin">GPIO // RADAR</span>
-                <div class="node-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20"/><path d="M20 12v8H4v-8"/><circle cx="12" cy="7" r="3"/></svg>
-                </div>
-              </div>
-              <h3 class="node-title">Human Presence Radar</h3>
-              <p class="node-subtitle">24GHz mmWave Presence Radar</p>
-            </div>
-
-            <div class="arch-node" data-node="ir_array">
-              <div class="node-chip-header">
-                <span class="node-pin">PWM // EMITTER</span>
-                <div class="node-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                </div>
-              </div>
-              <h3 class="node-title">IR Array & Learner</h3>
-              <p class="node-subtitle">360° Emitter | 38kHz Receiver</p>
-            </div>
-          </div>
-
-          <!-- Component Inspector Panel -->
-          <div class="arch-inspector">
-            <svg viewBox="0 0 320 180" style="width: 100%; height: auto; display: block; margin-bottom: 16px;">
-              <g transform="translate(30, 20)">
-                <path d="M 10 30 Q 65 15 120 30 Q 175 45 120 60 Q 65 45 10 30 Z" fill="#263238" stroke="#ff6e40" stroke-width="2.5"/>
-                <circle cx="92" cy="37" r="3" fill="#ffffff"/>
-                <text x="50" y="24" fill="#d84315" font-family="JetBrains Mono" font-size="9" font-weight="bold">TOP: ENCLOSURE SHELL</text>
-                
-                <path d="M 10 60 Q 65 45 120 60 Q 175 75 120 90 Q 65 75 10 60 Z" fill="#e0f2f1" stroke="#00897b" stroke-width="2.5"/>
-                <text x="45" y="54" fill="#004d40" font-family="JetBrains Mono" font-size="9" font-weight="bold">LAYER 2: SENSORS & BLE BEACON</text>
-                
-                <path d="M 10 90 Q 65 75 120 90 Q 175 105 120 120 Q 65 105 10 90 Z" fill="#ffe0b2" stroke="#00897b" stroke-width="2.5"/>
-                <text x="65" y="84" fill="#b45309" font-family="JetBrains Mono" font-size="9" font-weight="bold">LAYER 1: MCU</text>
-                
-                <path d="M 10 120 Q 65 105 120 120 Q 175 135 120 150 Q 65 135 10 120 Z" fill="#0f172a" stroke="#00897b" stroke-width="2.5"/>
-                <text x="40" y="114" fill="#80cbc4" font-family="JetBrains Mono" font-size="9" font-weight="bold">BASE: 360° IR LENS & MOUNT</text>
-              </g>
-            </svg>
-
-            <div class="inspector-header">
-              <div class="inspector-title" id="inspectorTitle">MCU</div>
-            </div>
-            <p id="inspectorSub" style="color: #b45309; font-family: var(--font-code); font-size: 0.85rem; margin-bottom: 12px; font-weight: 800;">Dual-band Wi-Fi (5GHz & 2.4GHz) + Thread / Zigbee (802.15.4)</p>
-            <p id="inspectorDesc" style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">The primary MCU executing local comfort algorithms. Runs deterministic real-time control loops without reliance on external cloud servers.</p>
-
-            <h4 style="font-family: var(--font-code); font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800;">BUS & PINOUT CONFIGURATION</h4>
-            <table class="pinout-table">
-              <thead>
-                <tr>
-                  <th>PIN</th>
-                  <th>FUNCTION</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody id="inspectorPins">
-                <!-- Dynamically populated via script.js -->
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
+      <figure>
+        <img src="assets/acboss-technical-cutaway-v1.png" alt="Illustrative AC Boss technical cutaway">
+        <figcaption>Illustrative technical cutaway.</figcaption>
+      </figure>
     </section>
 
-    <!-- SECTION 3: REAL-TIME SIMULATOR -->
-    <section id="simulator" class="section">
-      <div class="section-header">
-        <span class="section-tag">REAL-TIME SIMULATION</span>
-        <h2 class="section-title">Autopilot vs Traditional AC Curve</h2>
-        <p class="section-desc">Adjust ambient environment parameters to see how Acboss prevents aggressive AC temperature swings.</p>
-      </div>
-
-      <div class="simulator-card">
-        <div class="sim-controls">
-          <div class="sim-control-group">
-            <label>Outside Heat Index: <span id="valOutside">34°C</span></label>
-            <input type="range" id="sliderOutside" min="28" max="44" value="34" step="1">
-          </div>
-
-          <div class="sim-control-group">
-            <label>Target Comfort Temp: <span id="valTarget">23.5°C</span></label>
-            <input type="range" id="sliderTarget" min="20" max="27" value="23.5" step="0.5">
-          </div>
-        </div>
-
-        <div class="sim-chart-container">
-          <div class="sim-chart-legend">
-            <div class="legend-item">
-              <div class="legend-color" style="background: var(--vector-coral);"></div>
-              <span>Traditional Split AC (Sawtooth Spikes)</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color" style="background: var(--vector-teal);"></div>
-              <span>Acboss Autopilot (Smooth Comfort Zone)</span>
-            </div>
-          </div>
-
-          <canvas id="simCanvas"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 4: COMPARISON MATRIX VS AC REMOTE & SMART APP -->
-    <section id="comparison" class="section">
-      <div class="section-header">
-        <span class="section-tag">FEATURE MATRIX</span>
-        <h2 class="section-title">Acboss vs Standard AC Remotes & Smart Apps</h2>
-        <p class="section-desc">See how Acboss’s 100% local MCU Edge AI and 24GHz mmWave presence radar outperform traditional AC remotes, basic IR blasters, and smart apps.</p>
-      </div>
-
-      <div class="comparison-wrapper">
-        <table class="tech-table">
-          <thead>
-            <tr>
-              <th>Feature Dimension</th>
-              <th>Standard AC Remote</th>
-              <th>Basic IR Blaster</th>
-              <th>Smart AC App</th>
-              <th class="acboss-header">Acboss Edge Autopilot</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Execution Model (Cloud vs Local)</strong></td>
-              <td>Manual Buttons</td>
-              <td>Cloud Dependent</td>
-              <td>Cloud Server API</td>
-              <td class="acboss-cell">100% Local MCU Edge AI (Zero Outages)</td>
-            </tr>
-            <tr>
-              <td><strong>Human Occupancy Radar (Breathing Sense)</strong></td>
-              <td>No</td>
-              <td>No</td>
-              <td>No Sensor</td>
-              <td class="acboss-cell">Integrated 24GHz mmWave Radar Array</td>
-            </tr>
-            <tr>
-              <td><strong>App Proximity Auto-Detection</strong></td>
-              <td>No</td>
-              <td>No</td>
-              <td>GPS Geofence Only (Location Delay)</td>
-              <td class="acboss-cell">Instant BLE 5.0 RSSI Signal Sensing</td>
-            </tr>
-            <tr>
-              <td><strong>Flexible Mounting Options</strong></td>
-              <td>Handheld</td>
-              <td>Wall / Table</td>
-              <td>Phone Only</td>
-              <td class="acboss-cell">Tabletop Base & Magnetic Wall Mount</td>
-            </tr>
-            <tr>
-              <td><strong>Power Cut / Outage Backup Support</strong></td>
-              <td>AAA Batteries</td>
-              <td>Wall Outlet Only</td>
-              <td>N/A</td>
-              <td class="acboss-cell">5V USB-C & Portable Power Bank Support</td>
-            </tr>
-            <tr>
-              <td><strong>IR Emitter Base Coverage</strong></td>
-              <td>Directional Pointing</td>
-              <td>Single Emitter LED</td>
-              <td>Single Emitter LED</td>
-              <td class="acboss-cell">360° Omnidirectional Quad IR Beam</td>
-            </tr>
-            <tr>
-              <td><strong>Wireless Connectivity</strong></td>
-              <td>None</td>
-              <td>2.4GHz Wi-Fi</td>
-              <td>2.4GHz Wi-Fi</td>
-              <td class="acboss-cell">Dual-band Wi-Fi + Thread / Zigbee 802.15.4</td>
-            </tr>
-            <tr>
-              <td><strong>Bed-Height Climate Micro-Sensing</strong></td>
-              <td>No</td>
-              <td>No</td>
-              <td>Wall Sensor / Phone Only</td>
-              <td class="acboss-cell">Precision Temp ±0.1°C + Humidity + PMV</td>
-            </tr>
-            <tr>
-              <td><strong>Nighttime Bedroom Aesthetics</strong></td>
-              <td>No Display</td>
-              <td>Status Light</td>
-              <td>Phone Screen Glow</td>
-              <td class="acboss-cell">Matte Black Squircle + Ambient Status LED</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- SECTION 5: RESERVATION & FAQ -->
-    <section id="preorder" class="section">
-      <div class="preorder-card">
-        <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; color: var(--text-heading);">Reserve Early Access Unit</h2>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">Join our early launch cohort and receive an early handmade unit built on our tested prototype platform.</p>
-
-        <div class="notice-banner-tech">
-          <strong>NOTICE:</strong> Early Acboss units are handmade, 3D-printed hardware builds with tested firmware.
-        </div>
-
-        <div id="preorderConfirmation" style="display: none; background: #e8f5e9; border: 1.5px solid #a5d6a7; color: var(--vector-green); padding: 24px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
-          <h3 style="margin-bottom: 8px; font-family: var(--font-code);">EARLY_ACCESS_RESERVED // CONFIRMED</h3>
-          <p style="color: var(--text-heading); font-size: 0.95rem;">Thank you! We will email you as soon as your batch build is ready for dispatch.</p>
-        </div>
-
-        <form id="preorderForm">
-          <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" class="form-control" placeholder="Asha Sharma">
-            <div id="nameError" class="field-error" aria-live="polite"></div>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" class="form-control" placeholder="asha@example.com">
-            <div id="emailError" class="field-error" aria-live="polite"></div>
-          </div>
-
-          <div class="form-group">
-            <label for="city">City</label>
-            <input type="text" id="city" class="form-control" placeholder="Mumbai">
-            <div id="cityError" class="field-error" aria-live="polite"></div>
-          </div>
-
-          <button type="submit" class="btn btn-coral" style="width: 100%; margin-top: 16px; font-family: var(--font-code);">SUBMIT_RESERVATION_REQUEST →</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- FAQ Accordion -->
-    <section id="faq" class="section">
-      <div class="section-header">
-        <span class="section-tag">FAQ</span>
-        <h2 class="section-title">Frequently Asked Questions</h2>
-        <p class="section-desc">Got questions about compatibility, local logic, and hardware setup?</p>
-      </div>
-
-      <div class="faq-list">
-        <details class="faq-item">
-          <summary>Will Acboss work with my existing Split AC?</summary>
-          <p>Yes. Acboss features a 38kHz IR receiver that learns your existing Split AC remote control signals during a 2-minute setup process.</p>
-        </details>
-
-        <details class="faq-item">
-          <summary>What are the mounting options for Acboss?</summary>
-          <p>Acboss offers flexible dual-mounting: place it flat on your bedside table or couch stand for bed-level sensing, or mount it cleanly on any wall using the included magnetic wall bracket or residue-free 3M adhesive strip.</p>
-        </details>
-
-        <details class="faq-item">
-          <summary>Can Acboss run on a power bank during power outages?</summary>
-          <p>Yes. Acboss is powered via a standard 5V DC USB-C port. You can plug it into any standard mobile power bank to maintain uninterrupted AC cooling autopilot during summer power cuts.</p>
-        </details>
-
-        <details class="faq-item">
-          <summary>Does Acboss require active internet or Wi-Fi to run?</summary>
-          <p>No. Acboss runs 100% of its comfort decision loops locally on the onboard MCU. Internet access is not required for continuous cooling autopilot.</p>
-        </details>
-
-        <details class="faq-item">
-          <summary>What do early units look like?</summary>
-          <p>Early units are custom 3D-printed hardware enclosures containing our fully-tested PCB prototype platform.</p>
+    <section class="ac-home-details" id="home-details" aria-labelledby="home-details-title">
+      <h2 id="home-details-title">A closer look at the room.</h2>
+      <div>
+        <img src="assets/acboss-product-render.png" alt="AC Boss product render">
+        <details>
+          <summary>How AC Boss fits into your room</summary>
+          <p>Placement and compatibility are assessed around your existing setup.</p>
         </details>
       </div>
+    </section>
+
+    <section class="ac-home-faq" id="home-faq" aria-labelledby="home-faq-title">
+      <h2 id="home-faq-title">Questions, answered simply.</h2>
+      <details>
+        <summary>Can I ask about my existing room?</summary>
+        <p>Yes. Tell us a little about your room and current setup, and we can begin with a practical conversation.</p>
+      </details>
+      <details>
+        <summary>What should I share?</summary>
+        <p>A photo of the room, its layout, and the air conditioner you use can help us understand the context.</p>
+      </details>
+    </section>
+
+    <section class="ac-home-interest" id="home-interest" aria-labelledby="home-interest-title">
+      <h2 id="home-interest-title">Talk to us about your room.</h2>
+      <p>We are happy to start with the details that matter to your space.</p>
+      <a href="mailto:hello@acboss.com">Ask about compatibility</a>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer>
-    <p>© 2026 Acboss Hardware. Autonomous Smart AC Autopilot Platform. All rights reserved.</p>
+    <p>© 2026 AC Boss. All rights reserved.</p>
   </footer>
 
   <script src="script.js"></script>
