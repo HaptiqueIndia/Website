@@ -14,9 +14,10 @@
   <header class="ac-nav">
     <a class="ac-wordmark" href="index.html" aria-label="ACBOSS home">ACBOSS</a>
     <nav aria-label="Product page">
-      <a href="#benefits">Why ACBOSS</a>
-      <a href="#mounting">Placement</a>
-      <a href="#technology">Technology</a>
+      <a href="#why-this">Why ACBOSS</a>
+      <a href="#setup">Setup</a>
+      <a href="#architecture">Hardware</a>
+      <a href="#comparison">Compare</a>
       <a href="#faq">FAQ</a>
     </nav>
     <a class="ac-nav__cta" href="mailto:hello@acboss.com?subject=ACBOSS%20compatibility">Ask about compatibility</a>
@@ -121,33 +122,312 @@
       </details>
     </section>
 
-    <section class="ac-faq" id="faq" aria-labelledby="faq-title">
-      <div class="ac-section-intro">
-        <p class="ac-eyebrow">QUESTIONS, ANSWERED SIMPLY</p>
-        <h2 id="faq-title">Everything you need to know.</h2>
+    <section id="why-this" class="evaluation-section evaluation-section--thesis" aria-labelledby="why-this-title">
+      <div class="section-header">
+        <span class="section-tag">ENGINEERING THESIS</span>
+        <h2 class="section-title" id="why-this-title">Why Your AC Overcools &amp; How ACBOSS Solves It</h2>
+        <p class="section-desc">Understand the built-in AC thermostat flaw, wired thermostat barriers, and how ACBOSS creates continuous real-world room comfort.</p>
       </div>
-      <div class="ac-faq__list">
-        <details>
-          <summary>Where can I place ACBOSS?<span aria-hidden="true">+</span></summary>
-          <p>It is intended for bedside placement or a clean wall-mounted position, depending on your room and preferred setup.</p>
+
+      <div class="why-this-container">
+        <article class="why-this-card">
+          <div class="why-card-badge">PROBLEM 1 // THERMAL PHYSICS FLAW</div>
+          <h3>The Thermostat Built in the AC</h3>
+          <p>Even a 24°C AC setting feels freezing cold after running for a while. Why? Because the thermostat built in the AC measures return air near the ceiling, <strong>not your bed</strong>.</p>
+          <p>There is a <strong>3°C to 4°C temperature difference</strong> between your bed and ceiling return air. The AC compressor keeps running aggressively until the return air hits 24°C—leaving your sleeping area at a freezing 20°C.</p>
+          <div class="why-card-pill-row">
+            <span class="why-pill-highlight">BUILT-IN AC SENSOR: 24°C</span>
+            <span class="why-pill-alert">BED TEMP: 20°C (FREEZING)</span>
+          </div>
+        </article>
+
+        <article class="why-this-card">
+          <div class="why-card-badge">PROBLEM 2 // HARDWARE CONTROL BARRIER</div>
+          <h3>Wired Thermostats Don't Work</h3>
+          <p>Traditional smart thermostats like Nest or Ecobee are built for central HVAC systems requiring 24V wired relay cables. <strong>Split ACs have zero wired thermostat ports</strong>.</p>
+          <p>To control a Split AC automatically, you need an Infrared (IR) based controller—which in reality is just a remote control. Basic IR blasters and mobile apps lack true local room sensing and occupancy radar.</p>
+          <div class="why-card-pill-row">
+            <span class="why-pill-alert">NEST / ECOBEE: WIRED ONLY</span>
+            <span class="why-pill-highlight">SPLIT AC: INFRARED ONLY</span>
+          </div>
+        </article>
+
+        <article class="why-solution-banner">
+          <div class="why-solution-header">
+            <span class="why-solution-tag">THE ACBOSS SOLUTION</span>
+            <h3>Best of Both Worlds</h3>
+          </div>
+          <p>We built ACBOSS to bridge this exact gap. It places a high-precision climate sensor right at bed/couch height—measuring true occupant thermal comfort—while using an onboard 360° IR array to send instant micro-adjustments to your Split AC. No wiring, no overcooling, no cloud latency.</p>
+          <div class="why-solution-features">
+            <div class="why-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Bed-Level Micro-Climate Sensing</span>
+            </div>
+            <div class="why-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Universal 360° Split AC IR Remote Control</span>
+            </div>
+            <div class="why-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Local MCU Edge AI (Zero Cloud Latency)</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="setup" class="evaluation-section" aria-labelledby="setup-title">
+      <div class="section-header">
+        <span class="section-tag">SIMPLIFIED DEPLOYMENT</span>
+        <h2 class="section-title" id="setup-title">Up &amp; Running in Under 2 Minutes</h2>
+        <p class="section-desc">Zero wiring, no HVAC technician required. Simply place ACBOSS on your nightstand and match your Split AC remote.</p>
+      </div>
+
+      <div class="setup-steps-grid">
+        <article class="setup-step-card">
+          <div class="setup-num-badge">STEP 01</div>
+          <h3>Place Near Bed or Couch</h3>
+          <p>Set ACBOSS on your nightstand or side table. Placing it near your sleeping or sitting area ensures it senses true occupant micro-climate rather than ceiling return air.</p>
+        </article>
+        <article class="setup-step-card">
+          <div class="setup-num-badge">STEP 02</div>
+          <h3>2-Minute IR Remote Signal Match</h3>
+          <p>Press any button on your existing Split AC remote facing ACBOSS. Onboard 38kHz IR learner automatically detects and saves your AC remote control signals.</p>
+        </article>
+        <article class="setup-step-card">
+          <div class="setup-num-badge">STEP 03</div>
+          <h3>Autopilot Active (100% Local)</h3>
+          <p>ACBOSS begins monitoring temperature, humidity, 24GHz mmWave radar breathing, and BLE mobile app proximity—sending continuous 360° IR adjustments locally.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="versatility" class="evaluation-section" aria-labelledby="versatility-title">
+      <div class="section-header">
+        <span class="section-tag">FLEXIBLE MOUNTING &amp; POWER OPTIONS</span>
+        <h2 class="section-title" id="versatility-title">Mount Anywhere. Power with Anything.</h2>
+        <p class="section-desc">Designed for modern bedrooms: choose between tabletop placement or wall mounting, powered by standard 5V USB-C or any portable power bank.</p>
+      </div>
+
+      <div class="setup-steps-grid">
+        <article class="setup-step-card">
+          <div class="setup-num-badge">MOUNTING 01 // DESK &amp; NIGHTSTAND</div>
+          <h3>Tabletop &amp; Nightstand Placement</h3>
+          <p>Set ACBOSS directly on your bedside table or couch stand. Its 360° omnidirectional IR lens array and weighted anti-slip base ensure perfect room coverage and bed-level sensing.</p>
+          <div class="evaluation-pills">
+            <span class="story-badge-pill">BED-LEVEL SENSING</span>
+            <span class="story-badge-pill">ANTI-SLIP BASE</span>
+          </div>
+        </article>
+        <article class="setup-step-card">
+          <div class="setup-num-badge">MOUNTING 02 // WALL MOUNT</div>
+          <h3>Wall Bracket &amp; Adhesive Mount</h3>
+          <p>Mount ACBOSS cleanly on any bedroom wall using the magnetic wall bracket or residue-free 3M adhesive strip. Ideal for clean wall setups with direct line-of-sight to your Split AC.</p>
+          <div class="evaluation-pills">
+            <span class="story-badge-pill">MAGNETIC BRACKET</span>
+            <span class="story-badge-pill">ADHESIVE MOUNT</span>
+          </div>
+        </article>
+        <article class="setup-step-card">
+          <div class="setup-num-badge">POWER // 5V USB-C &amp; POWER BANK</div>
+          <h3>Power Bank Outage Support</h3>
+          <p>Powered via standard 5V DC USB-C. Connect ACBOSS to any standard mobile power bank to keep your AC cooling autopilot active during summer power cuts and outages.</p>
+          <div class="evaluation-pills">
+            <span class="story-badge-pill">5V USB-C PORT</span>
+            <span class="story-badge-pill">POWER BANK READY</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="architecture" class="evaluation-section" aria-labelledby="architecture-title">
+      <div class="section-header">
+        <span class="section-tag">HARDWARE PLATFORM &amp; FORM FACTOR</span>
+        <h2 class="section-title" id="architecture-title">Tested Hardware Architecture &amp; Design</h2>
+        <p class="section-desc">Minimalist matte black squircle pebble form factor built on tested PCB component modules.</p>
+      </div>
+
+      <div id="device-form" class="story-card-grid evaluation-device-form">
+        <div class="story-content">
+          <h3>Minimalist Product Design</h3>
+          <p>ACBOSS is crafted with a compact pebble footprint that sits quietly on your side table or nightstand. Discreet ambient status telemetry communicates local cooling adjustments without bright, distracting displays.</p>
+          <div class="hero-specs-row evaluation-specs">
+            <div class="hero-spec-item">
+              <span class="hero-spec-num">FORM FACTOR</span>
+              <span class="hero-spec-label">Compact &amp; Unobtrusive</span>
+            </div>
+            <div class="hero-spec-item">
+              <span class="hero-spec-num">AMBIENT</span>
+              <span class="hero-spec-label">Status Telemetry</span>
+            </div>
+            <div class="hero-spec-item">
+              <span class="hero-spec-num">360° COVERAGE</span>
+              <span class="hero-spec-label">Omnidirectional IR Base</span>
+            </div>
+          </div>
+        </div>
+        <img src="assets/acboss-product-pebble-vector.jpg" alt="ACBOSS smart AC controller hardware vector graphic" class="vector-story-img">
+      </div>
+
+      <div class="architecture-container">
+        <div class="arch-layout">
+          <div class="arch-nodes-grid" aria-label="Hardware components">
+            <button type="button" class="arch-node active" data-node="mcu" aria-pressed="true">
+              <span class="node-chip-header"><span class="node-pin">MCU // CORE</span></span>
+              <span class="node-title">MCU</span>
+              <span class="node-subtitle">Dual-band Wi-Fi (5GHz/2.4GHz) + Thread/Zigbee</span>
+            </button>
+            <button type="button" class="arch-node" data-node="ble_proximity" aria-pressed="false">
+              <span class="node-chip-header"><span class="node-pin">BLE 5.0 // PROXIMITY</span></span>
+              <span class="node-title">BLE Proximity Sensing</span>
+              <span class="node-subtitle">App Proximity Auto-Detection &amp; RSSI</span>
+            </button>
+            <button type="button" class="arch-node" data-node="climate_sensor" aria-pressed="false">
+              <span class="node-chip-header"><span class="node-pin">I2C // SENSOR</span></span>
+              <span class="node-title">Precision Climate Sensor</span>
+              <span class="node-subtitle">±0.1°C Precision | Relative Humidity</span>
+            </button>
+            <button type="button" class="arch-node" data-node="mmwave" aria-pressed="false">
+              <span class="node-chip-header"><span class="node-pin">GPIO // RADAR</span></span>
+              <span class="node-title">Human Presence Radar</span>
+              <span class="node-subtitle">24GHz mmWave Presence Radar</span>
+            </button>
+            <button type="button" class="arch-node" data-node="ir_array" aria-pressed="false">
+              <span class="node-chip-header"><span class="node-pin">PWM // EMITTER</span></span>
+              <span class="node-title">IR Array &amp; Learner</span>
+              <span class="node-subtitle">360° Emitter | 38kHz Receiver</span>
+            </button>
+          </div>
+
+          <div class="arch-inspector" aria-live="polite">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <g transform="translate(30, 20)">
+                <path d="M 10 30 Q 65 15 120 30 Q 175 45 120 60 Q 65 45 10 30 Z" fill="#263238" stroke="#d85f48" stroke-width="2.5"/>
+                <circle cx="92" cy="37" r="3" fill="#ffffff"/>
+                <text x="50" y="24" fill="#9b3829" font-size="9" font-weight="bold">TOP: ENCLOSURE SHELL</text>
+                <path d="M 10 60 Q 65 45 120 60 Q 175 75 120 90 Q 65 75 10 60 Z" fill="#e8e5de" stroke="#676761" stroke-width="2.5"/>
+                <text x="45" y="54" fill="#20201f" font-size="9" font-weight="bold">LAYER 2: SENSORS &amp; BLE BEACON</text>
+                <path d="M 10 90 Q 65 75 120 90 Q 175 105 120 120 Q 65 105 10 90 Z" fill="#f5d2c9" stroke="#d85f48" stroke-width="2.5"/>
+                <text x="65" y="84" fill="#742c21" font-size="9" font-weight="bold">LAYER 1: MCU</text>
+                <path d="M 10 120 Q 65 105 120 120 Q 175 135 120 150 Q 65 135 10 120 Z" fill="#20201f" stroke="#676761" stroke-width="2.5"/>
+                <text x="40" y="114" fill="#f7f6f2" font-size="9" font-weight="bold">BASE: 360° IR LENS &amp; MOUNT</text>
+              </g>
+            </svg>
+            <div class="inspector-header">
+              <div class="inspector-title" id="inspectorTitle">MCU</div>
+            </div>
+            <p class="inspector-subtitle" id="inspectorSub">Dual-band Wi-Fi (5GHz &amp; 2.4GHz) + Thread / Zigbee (802.15.4)</p>
+            <p id="inspectorDesc">The primary MCU executing local comfort algorithms. Runs deterministic real-time control loops without reliance on external cloud servers.</p>
+            <h4 class="inspector-label">Bus &amp; pinout configuration</h4>
+            <div class="ac-table-scroll" tabindex="0" role="region" aria-label="Hardware pinout table">
+              <table class="pinout-table">
+                <thead>
+                  <tr><th>Pin</th><th>Function</th><th>Status</th></tr>
+                </thead>
+                <tbody id="inspectorPins"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="simulator" class="evaluation-section" aria-labelledby="simulator-title">
+      <div class="section-header">
+        <span class="section-tag">REAL-TIME SIMULATION</span>
+        <h2 class="section-title" id="simulator-title">Autopilot vs Traditional AC Curve</h2>
+        <p class="section-desc">Adjust ambient environment parameters to see how ACBOSS prevents aggressive AC temperature swings.</p>
+      </div>
+      <div class="simulator-card">
+        <div class="sim-controls">
+          <div class="sim-control-group">
+            <label for="sliderOutside">Outside Heat Index: <span id="valOutside">34°C</span></label>
+            <input type="range" id="sliderOutside" min="28" max="44" value="34" step="1">
+          </div>
+          <div class="sim-control-group">
+            <label for="sliderTarget">Target Comfort Temp: <span id="valTarget">23.5°C</span></label>
+            <input type="range" id="sliderTarget" min="20" max="27" value="23.5" step="0.5">
+          </div>
+        </div>
+        <div class="sim-chart-container">
+          <div class="sim-chart-legend">
+            <div class="legend-item"><span class="legend-color legend-color--traditional"></span><span>Traditional Split AC (Sawtooth Spikes)</span></div>
+            <div class="legend-item"><span class="legend-color legend-color--acboss"></span><span>ACBOSS Autopilot (Smooth Comfort Zone)</span></div>
+          </div>
+          <canvas id="simCanvas" role="img" aria-label="Animated comparison between a traditional split AC temperature curve and the steadier ACBOSS comfort curve"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="evaluation-section" aria-labelledby="comparison-title">
+      <div class="section-header">
+        <span class="section-tag">FEATURE MATRIX</span>
+        <h2 class="section-title" id="comparison-title">ACBOSS vs Standard AC Remotes &amp; Smart Apps</h2>
+        <p class="section-desc">See how ACBOSS’s 100% local MCU Edge AI and 24GHz mmWave presence radar compare with traditional AC remotes, basic IR blasters, and smart apps.</p>
+      </div>
+      <div class="comparison-wrapper" tabindex="0" role="region" aria-label="ACBOSS feature comparison table">
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th>Feature Dimension</th>
+              <th>Standard AC Remote</th>
+              <th>Basic IR Blaster</th>
+              <th>Smart AC App</th>
+              <th class="acboss-header">ACBOSS Edge Autopilot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Execution Model (Cloud vs Local)</strong></td><td>Manual Buttons</td><td>Cloud Dependent</td><td>Cloud Server API</td><td class="acboss-cell">100% Local MCU Edge AI (Zero Outages)</td></tr>
+            <tr><td><strong>Human Occupancy Radar (Breathing Sense)</strong></td><td>No</td><td>No</td><td>No Sensor</td><td class="acboss-cell">Integrated 24GHz mmWave Radar Array</td></tr>
+            <tr><td><strong>App Proximity Auto-Detection</strong></td><td>No</td><td>No</td><td>GPS Geofence Only (Location Delay)</td><td class="acboss-cell">Instant BLE 5.0 RSSI Signal Sensing</td></tr>
+            <tr><td><strong>Flexible Mounting Options</strong></td><td>Handheld</td><td>Wall / Table</td><td>Phone Only</td><td class="acboss-cell">Tabletop Base &amp; Magnetic Wall Mount</td></tr>
+            <tr><td><strong>Power Cut / Outage Backup Support</strong></td><td>AAA Batteries</td><td>Wall Outlet Only</td><td>N/A</td><td class="acboss-cell">5V USB-C &amp; Portable Power Bank Support</td></tr>
+            <tr><td><strong>IR Emitter Base Coverage</strong></td><td>Directional Pointing</td><td>Single Emitter LED</td><td>Single Emitter LED</td><td class="acboss-cell">360° Omnidirectional Quad IR Beam</td></tr>
+            <tr><td><strong>Wireless Connectivity</strong></td><td>None</td><td>2.4GHz Wi-Fi</td><td>2.4GHz Wi-Fi</td><td class="acboss-cell">Dual-band Wi-Fi + Thread / Zigbee 802.15.4</td></tr>
+            <tr><td><strong>Bed-Height Climate Micro-Sensing</strong></td><td>No</td><td>No</td><td>Wall Sensor / Phone Only</td><td class="acboss-cell">Precision Temp ±0.1°C + Humidity + PMV</td></tr>
+            <tr><td><strong>Nighttime Bedroom Aesthetics</strong></td><td>No Display</td><td>Status Light</td><td>Phone Screen Glow</td><td class="acboss-cell">Matte Black Squircle + Ambient Status LED</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="faq" class="evaluation-section evaluation-section--faq" aria-labelledby="faq-title">
+      <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2 class="section-title" id="faq-title">Frequently Asked Questions</h2>
+        <p class="section-desc">Questions about compatibility, local logic, and hardware setup.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Will ACBOSS work with my existing Split AC?</summary>
+          <p>Yes. ACBOSS features a 38kHz IR receiver that learns your existing Split AC remote control signals during a 2-minute setup process.</p>
         </details>
-        <details>
-          <summary>Will it work with my split AC?<span aria-hidden="true">+</span></summary>
-          <p>Compatibility depends on your existing unit and setup. Contact us with your AC details and we will help you assess the fit.</p>
+        <details class="faq-item">
+          <summary>What are the mounting options for ACBOSS?</summary>
+          <p>ACBOSS offers flexible dual-mounting: place it flat on your bedside table or couch stand for bed-level sensing, or mount it cleanly on any wall using the included magnetic wall bracket or residue-free 3M adhesive strip.</p>
         </details>
-        <details>
-          <summary>Is the technical cutaway final hardware?<span aria-hidden="true">+</span></summary>
-          <p>No. It is an illustrative view of the intended product technology, not a final production-board specification.</p>
+        <details class="faq-item">
+          <summary>Can ACBOSS run on a power bank during power outages?</summary>
+          <p>Yes. ACBOSS is powered via a standard 5V DC USB-C port. You can plug it into any standard mobile power bank to maintain uninterrupted AC cooling autopilot during summer power cuts.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Does ACBOSS require active internet or Wi-Fi to run?</summary>
+          <p>No. ACBOSS runs 100% of its comfort decision loops locally on the onboard MCU. Internet access is not required for continuous cooling autopilot.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What do early units look like?</summary>
+          <p>Early units are custom 3D-printed hardware enclosures containing our fully-tested PCB prototype platform.</p>
         </details>
       </div>
     </section>
 
-    <section class="ac-interest" id="interest">
+    <section class="ac-interest ac-enquiry" id="enquiry" aria-labelledby="enquiry-title">
       <img src="assets/acboss-product-render.png" alt="" aria-hidden="true">
       <div>
-        <p class="ac-eyebrow">ACBOSS</p>
-        <h2>Bring calmer comfort to your room.</h2>
-        <a class="ac-button ac-button--dark" href="mailto:hello@acboss.com?subject=ACBOSS%20compatibility">Talk to us about compatibility</a>
+        <p class="ac-eyebrow">COMPATIBILITY ENQUIRY</p>
+        <h2 id="enquiry-title">Tell us about your room and split AC.</h2>
+        <p>Share your AC model, room and city, and preferred placement. We’ll reply by email about compatibility and practical next steps.</p>
+        <a class="ac-button ac-button--dark" href="mailto:hello@acboss.com?subject=ACBOSS%20compatibility%20enquiry&amp;body=AC%20model%3A%0ARoom%20and%20city%3A%0APreferred%20placement%3A">Start an email enquiry</a>
       </div>
     </section>
   </main>
