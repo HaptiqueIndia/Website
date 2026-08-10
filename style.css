@@ -1527,7 +1527,7 @@ footer {
 .ac-product-page .evaluation-device-form .vector-story-img { border:0; border-radius:0; box-shadow:none; }
 .ac-product-page .evaluation-specs { padding-top:12px; border:0; }
 .ac-product-page .architecture-container { padding:clamp(20px,4vw,42px); border:1px solid var(--ac-line); background:var(--ac-surface); }
-.ac-product-page .arch-layout { gap:clamp(24px,4vw,48px); }
+.ac-product-page .arch-layout { min-width:0; gap:clamp(24px,4vw,48px); }
 .ac-product-page .arch-nodes-grid { gap:1px; background:var(--ac-line); }
 .ac-product-page .arch-node {
   width:100%;
@@ -1548,11 +1548,12 @@ footer {
 .ac-product-page .node-title,.ac-product-page .node-subtitle { display:block; }
 .ac-product-page .node-title { font-family:'Manrope',sans-serif; letter-spacing:-.03em; }
 .ac-product-page .node-subtitle { color:var(--ac-muted); font-family:'DM Sans',sans-serif; line-height:1.45; }
-.ac-product-page .arch-inspector { top:96px; padding:clamp(22px,3vw,34px); border:1px solid var(--ac-line); }
+.ac-product-page .arch-inspector { min-width:0; top:96px; padding:clamp(22px,3vw,34px); border:1px solid var(--ac-line); }
 .ac-product-page .arch-inspector > svg { display:block; width:100%; height:auto; margin-bottom:16px; }
 .ac-product-page .inspector-header { border-color:var(--ac-line); }
 .ac-product-page .inspector-subtitle { color:var(--ac-coral); font-size:.88rem; font-weight:700; }
 .ac-product-page .inspector-label { margin:24px 0 10px; color:var(--ac-muted); font-family:'DM Sans',sans-serif; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; }
+.ac-product-page .ac-table-scroll { width:100%; min-width:0; max-width:100%; overflow-x:auto; }
 .ac-product-page .ac-table-scroll,.ac-product-page .comparison-wrapper { scrollbar-color:var(--ac-coral) var(--ac-surface); }
 .ac-product-page .pinout-table,.ac-product-page .tech-table { margin:0; background:#fbfaf7; font-family:'DM Sans',sans-serif; }
 .ac-product-page .pinout-table th,.ac-product-page .pinout-table td,.ac-product-page .tech-table th,.ac-product-page .tech-table td { border-color:var(--ac-line); }
