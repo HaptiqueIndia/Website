@@ -87,8 +87,8 @@ function initSleepCarousel() {
 const ARCH_DATA = {
   mcu: {
     title: "MCU",
-    subtitle: "Dual-band Wi-Fi (5GHz & 2.4GHz) + Thread / Zigbee (802.15.4)",
-    description: "The primary MCU executing local comfort algorithms. Runs deterministic real-time control loops without reliance on external cloud servers.",
+    subtitle: "Local MCU control; Wi-Fi optional",
+    description: "The primary MCU executes the comfort algorithms and deterministic real-time control loop. ROOT can sense the room and adjust the AC without an active Wi-Fi network or external cloud service.",
     pinouts: [
       { pin: "GPIO 04", function: "IR_TX_PWM", status: "ACTIVE (38kHz Carrier)" },
       { pin: "GPIO 05", function: "IR_RX_LEARNER", status: "READY (Demodulated)" },
