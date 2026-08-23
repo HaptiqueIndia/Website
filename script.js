@@ -223,17 +223,21 @@ function initComfortSimulator() {
 
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    const cssWidth = Math.max(1, Math.round(rect.width));
+    const cssHeight = Math.max(1, Math.round(rect.height));
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = cssWidth * pixelRatio;
+    canvas.height = cssHeight * pixelRatio;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   }
 
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
   function draw() {
-    const width = canvas.width / window.devicePixelRatio;
-    const height = canvas.height / window.devicePixelRatio;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
     
     const outsideTemp = parseFloat(outsideSlider ? outsideSlider.value : 34);
     const targetTemp = parseFloat(targetSlider ? targetSlider.value : 23.5);

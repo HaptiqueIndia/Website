@@ -1387,6 +1387,8 @@ footer {
 .ac-nav nav { display:flex; gap:24px; }
 .ac-nav nav a,.ac-footer a { color:var(--ac-ink); font-size:.9rem; text-decoration:none; }
 .ac-nav__cta,.ac-text-link { color:var(--ac-ink); border-bottom:1px solid currentColor; padding-bottom:2px; font-size:.88rem; font-weight:700; text-decoration:none; }
+.ac-nav__cta--mobile { display:none; align-items:center; gap:7px; border-bottom:0; }
+.ac-nav__cta--mobile svg { width:18px; height:18px; fill:currentColor; }
 .ac-product-hero { min-height:min(760px,calc(100vh - 76px)); max-width:1440px; margin:auto; padding:clamp(64px,10vw,144px) 8vw; display:grid; grid-template-columns:.8fr 1.2fr; align-items:center; gap:clamp(36px,8vw,120px); }
 .ac-eyebrow { color:var(--ac-coral); font-size:.72rem; letter-spacing:.14em; font-weight:700; margin:0 0 18px; }
 .ac-product-hero h1 { max-width:620px; font-size:clamp(3rem,6vw,6.4rem); line-height:.98; letter-spacing:-.075em; margin:0; }
@@ -1446,7 +1448,7 @@ footer {
 .ac-footer p { margin:0; }
 .ac-product-page :focus-visible { outline:3px solid var(--ac-coral); outline-offset:4px; }
 @media (max-width:760px) {
-  .ac-nav { min-height:64px; padding:0 24px; }.ac-nav nav { display:none; }.ac-nav__cta { font-size:.77rem; }
+  .ac-nav { min-height:64px; padding:0 24px; }.ac-nav nav { display:none; }.ac-nav__cta { font-size:.77rem; }.ac-nav__cta--desktop { display:none; }.ac-nav__cta--mobile { display:inline-flex; }.ac-product-hero__eyebrow { display:none; }
   .ac-product-hero,.ac-story { grid-template-columns:1fr; }.ac-product-hero { padding:72px 7vw 0; min-height:0; }.ac-product-hero__visual { margin-top:48px; }
   .ac-product-hero__visual img,.ac-story__image,.ac-story__image img { min-height:420px; }.ac-story--mount .ac-story__copy { order:1; }.ac-story--mount .ac-story__image { order:2; }
   .ac-story__copy { padding:78px 8vw; }.ac-benefit-grid { grid-template-columns:1fr; }.ac-benefit-grid article { min-height:auto; padding:28px 0; margin:0; border-right:0; border-bottom:1px solid var(--ac-line); }.ac-benefit-grid h3 { margin:28px 0 10px; }
@@ -1523,7 +1525,8 @@ footer {
 .ac-product-page .setup-steps-grid { gap:1px; background:var(--ac-line); }
 .ac-product-page .setup-step-card { min-width:0; padding:clamp(28px,4vw,42px); }
 .ac-product-page .evaluation-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
-.ac-product-page .evaluation-device-form { grid-template-columns:1fr 1.1fr; gap:clamp(30px,5vw,64px); margin-bottom:40px; padding:clamp(28px,5vw,56px); border:1px solid var(--ac-line); }
+.ac-product-page .evaluation-device-form { grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(30px,5vw,64px); margin-bottom:40px; padding:clamp(28px,5vw,56px); border:1px solid var(--ac-line); }
+.ac-product-page .evaluation-device-form > * { min-width:0; max-width:100%; }
 .ac-product-page .evaluation-device-form .vector-story-img { border:0; border-radius:0; box-shadow:none; }
 .ac-product-page .evaluation-specs { padding-top:12px; border:0; }
 .ac-product-page .architecture-container { padding:clamp(20px,4vw,42px); border:1px solid var(--ac-line); background:var(--ac-surface); }
@@ -1577,7 +1580,7 @@ footer {
 .ac-product-page .ac-enquiry p:not(.ac-eyebrow) { max-width:620px; margin:0 0 30px; color:var(--ac-muted); font-size:1.05rem; }
 
 @media (max-width:960px) {
-  .ac-product-page .arch-layout,.ac-product-page .evaluation-device-form { grid-template-columns:1fr; }
+  .ac-product-page .arch-layout,.ac-product-page .evaluation-device-form { grid-template-columns:minmax(0,1fr); }
   .ac-product-page .arch-inspector { position:static; }
 }
 @media (max-width:760px) {
@@ -1587,9 +1590,14 @@ footer {
   .ac-product-page .why-solution-features,.ac-product-page .sim-chart-legend { align-items:flex-start; flex-direction:column; gap:12px; }
   .ac-product-page .architecture-container { padding:14px; }
   .ac-product-page .simulator-card,.ac-product-page .sim-chart-container { padding:16px; }
+  .ac-product-page .evaluation-device-form > * { width:100%; }
+  .ac-product-page #device-form .hero-specs-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 22px; }
+  .ac-product-page #device-form .hero-spec-item { min-width:0; }
+  .ac-product-page #device-form .hero-spec-num,.ac-product-page #device-form .hero-spec-label { overflow-wrap:normal; word-break:normal; }
   .ac-product-page .ac-table-scroll,.ac-product-page .comparison-wrapper { overflow-x:auto; overscroll-behavior-inline:contain; }
-  .ac-product-page .pinout-table { min-width:600px; }
   .ac-product-page .comparison-wrapper table { min-width:720px; }
+  .ac-product-page .comparison-wrapper .tech-table th.acboss-header,.ac-product-page .comparison-wrapper .tech-table td.acboss-cell { position:sticky; right:0; z-index:2; box-shadow:-8px 0 12px rgba(32,32,31,.1); }
+  .ac-product-page .comparison-wrapper .tech-table th.acboss-header { z-index:3; }
 }
 
 /* ACBOSS homepage — warm editorial companion to the product story */
@@ -1624,6 +1632,7 @@ body:has(.ac-home-hero) :focus-visible { outline:3px solid var(--ac-home-coral-i
 .ac-home-hero { max-width:1440px; min-height:min(760px,calc(100vh - 76px)); margin:auto; padding:clamp(36px,4vw,64px) 6vw clamp(72px,8vw,112px); display:grid; grid-template-columns:.72fr 1.28fr; align-items:center; gap:clamp(28px,4vw,56px); }
 .ac-home-hero > div > p:first-child { color:var(--ac-home-coral-ink); font-size:.72rem; font-weight:800; letter-spacing:.14em; margin:0 0 18px; }
 .ac-home-hero h1 { max-width:620px; margin:0; }
+.ac-home-hero-highlight { color:var(--ac-home-coral-ink); text-decoration:underline; text-decoration-color:rgba(155,56,41,.35); text-decoration-thickness:.06em; text-underline-offset:.08em; }
 .ac-home-hero h1 + p { max-width:430px; margin:28px 0 34px; color:var(--ac-home-muted); font-size:1.1rem; }
 .ac-home-hero a,.ac-home-interest a { display:inline-flex; min-height:50px; align-items:center; justify-content:center; padding:0 24px; border-radius:999px; background:var(--ac-home-ink); color:var(--ac-home-paper); font-size:.88rem; font-weight:700; text-decoration:none; transition:transform .25s ease,background-color .25s ease; }
 .ac-home-hero a:hover,.ac-home-interest a:hover { background:var(--ac-home-coral); transform:translateY(-2px); }
