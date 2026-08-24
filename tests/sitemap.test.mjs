@@ -42,7 +42,8 @@ assert.match(privacy, /<title>[^<]*Privacy policy/i, 'privacy page should have a
 assert.match(privacy, /How we use information/i, 'privacy page should explain information use');
 assert.match(privacy, /mailto:info@get-root\.in/i, 'privacy page should provide a privacy contact');
 assert.match(comingSoon, /Coming soon/i, 'coming-soon page should show the launch state');
-assert.match(comingSoon, /Haptique Electronics Pvt\. Ltd\./i, 'coming-soon page should identify the company');
+assert.match(comingSoon, /Indoor climate, rethought/i, 'coming-soon page should communicate the climate promise');
+assert.doesNotMatch(comingSoon, /Discuss on Discord|Haptique Electronics Pvt\. Ltd\.|Panasonic Ignition/i, 'coming-soon page should remain a minimal public gate');
 assert.match(siteGate, /localhost|127\.0\.0\.1/i, 'site gate should allow local developer review');
 assert.match(siteGate, /coming-soon\.html/i, 'site gate should redirect public traffic to coming-soon');
 for (const page of [home, sitemap, about, privacy]) {
