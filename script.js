@@ -6,7 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
   initProductGallery();
   initCard3DTiltEffects();
   initSleepCarousel();
+  initSitemapContactForm();
 });
+
+/* -------------------------------------------------------------
+ * 0. Static sitemap email handoff
+ * ------------------------------------------------------------- */
+function initSitemapContactForm() {
+  const form = document.getElementById('sitemapContactForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const name = String(formData.get('name') || '').trim();
+    const email = String(formData.get('email') || '').trim();
+    const message = String(formData.get('message') || '').trim();
+    const subject = `ROOT website message from ${name}`;
+    const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+
+    window.location.href = `mailto:info@get-root.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+}
 
 /* -------------------------------------------------------------
  * 1. Auto-Playing Sleep Paradox Carousel
