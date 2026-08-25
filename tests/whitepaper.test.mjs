@@ -12,7 +12,8 @@ assert.match(
 assert.equal((page.match(/<h1\b/gi) ?? []).length, 1, 'paper should have one h1');
 assert.match(page, /<body class="ac-whitepaper-page" id="top">/i);
 assert.doesNotMatch(page, /<body[^>]+class="[^"]*ac-product-page/i);
-assert.match(page, /Companion web edition/i);
+assert.match(page, />Companion web edition \/ D0\.1</i);
+assert.doesNotMatch(page, /href\s*=\s*["'][^"']*\.(?:pdf|docx)(?:[?#][^"']*)?["']/i);
 assert.match(page, /ROOT-TCP-001/i);
 assert.match(page, /D0\.1/i);
 assert.match(page, /25 August 2026/i);

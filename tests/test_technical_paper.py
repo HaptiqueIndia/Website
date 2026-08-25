@@ -1,9 +1,12 @@
 import importlib.util
 import pathlib
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
 import xml.etree.ElementTree as ET
+from unittest import mock
 
 import pdfplumber
 from docx import Document
@@ -59,8 +62,13 @@ class ContentModelTests(unittest.TestCase):
         self.assertTrue({"CB-01", "HT-01", "HT-02", "PE-01", "PE-07"}.issubset(
             {claim["id"] for claim in paper.CLAIMS}
         ))
+        required_nonempty = required - {"superseded_wording"}
         for claim in paper.CLAIMS:
             self.assertTrue(required.issubset(claim))
+            for field in required_nonempty:
+                with self.subTest(claim_id=claim["id"], field=field):
+                    self.assertTrue(claim[field])
+            self.assertTrue(claim["superseded_wording"] is None or claim["superseded_wording"].strip())
         self.assertNotIn("Implemented prototype behavior", {claim["status"] for claim in paper.CLAIMS})
         for claim in paper.CLAIMS:
             expected_revision = "Not applicable" if claim["id"] == "CB-01" else "Target revision not yet assigned"
@@ -84,6 +92,7 @@ class ContentModelTests(unittest.TestCase):
     def test_protocols_have_complete_planning_contract(self):
         paper = self.load_module()
         required = {
+            "claim_id", "title",
             "conditions", "comparator_ground_truth", "sample_interval", "repeated_trials",
             "primary_outcomes", "secondary_outcomes", "acceptance_criterion",
             "exclusions_missing_data", "uncertainty", "retained_evidence_artifact",
@@ -91,6 +100,9 @@ class ContentModelTests(unittest.TestCase):
         }
         for protocol in paper.PROTOCOLS:
             self.assertTrue(required.issubset(protocol))
+            for field in required:
+                with self.subTest(protocol_id=protocol["claim_id"], field=field):
+                    self.assertTrue(protocol[field])
             self.assertEqual(protocol["acceptance_criterion"], "Defined before testing")
             self.assertEqual(protocol["hardware_revision"], "Target revision not yet assigned")
             self.assertEqual(protocol["firmware_revision"], "Target revision not yet assigned")
@@ -293,6 +305,72 @@ class DocxBuilderTests(unittest.TestCase):
             second = self.builder.build_docx(directory / "second.docx")
 
             self.assertEqual(first.read_bytes(), second.read_bytes())
+
+    def test_pdf_only_preserves_existing_docx_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = pathlib.Path(temporary_directory)
+            docx_path = directory / "canonical.docx"
+            pdf_path = directory / "canonical.pdf"
+            render_dir = directory / "render"
+            original_bytes = b"already-scrubbed-canonical-docx"
+            docx_path.write_bytes(original_bytes)
+
+            def fake_render(source, supplied_render_dir, destination):
+                self.assertEqual(pathlib.Path(source), docx_path)
+                self.assertEqual(pathlib.Path(supplied_render_dir), render_dir)
+                pathlib.Path(destination).write_bytes(b"pdf")
+                return pathlib.Path(destination)
+
+            arguments = [
+                str(BUILDER_PATH), "--pdf-only", "--output", str(docx_path),
+                "--pdf-output", str(pdf_path), "--render-dir", str(render_dir),
+            ]
+            with (
+                mock.patch.object(sys, "argv", arguments),
+                mock.patch.object(self.builder, "build_docx", side_effect=AssertionError("must not rebuild")),
+                mock.patch.object(self.builder, "render_canonical_pdf", side_effect=fake_render) as render,
+            ):
+                self.builder.main()
+
+            render.assert_called_once()
+            self.assertEqual(docx_path.read_bytes(), original_bytes)
+
+    def test_pdf_render_cleanup_is_scoped_and_publish_is_atomic_on_failure(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = pathlib.Path(temporary_directory)
+            render_root = directory / "render-root"
+            render_dir = render_root / "current"
+            render_dir.mkdir(parents=True)
+            (render_dir / "stale.png").write_bytes(b"stale")
+            sibling = render_root / "preserve.txt"
+            sibling.write_bytes(b"preserve")
+            docx_path = directory / "canonical.docx"
+            docx_path.write_bytes(b"docx")
+            pdf_path = directory / "canonical.pdf"
+            original_pdf = b"previous-good-pdf"
+            pdf_path.write_bytes(original_pdf)
+
+            def fake_run(*_args, **_kwargs):
+                (render_dir / "page-1.png").write_bytes(b"png")
+                (render_dir / f"{docx_path.stem}.pdf").write_bytes(b"replacement-pdf")
+                return subprocess.CompletedProcess([], 0, "rendered", "")
+
+            with (
+                mock.patch.object(self.builder, "RENDER_ROOT", render_root),
+                mock.patch.object(self.builder.subprocess, "run", side_effect=fake_run),
+                mock.patch.object(self.builder, "_validate_pdf"),
+                mock.patch.object(
+                    self.builder.os,
+                    "replace",
+                    side_effect=OSError("simulated atomic publish failure"),
+                ),
+            ):
+                with self.assertRaisesRegex(OSError, "simulated atomic publish failure"):
+                    self.builder.render_canonical_pdf(docx_path, render_dir, pdf_path)
+
+            self.assertFalse((render_dir / "stale.png").exists())
+            self.assertEqual(sibling.read_bytes(), b"preserve")
+            self.assertEqual(pdf_path.read_bytes(), original_pdf)
 
 
 class PdfArtifactTests(unittest.TestCase):
