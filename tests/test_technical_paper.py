@@ -2,9 +2,14 @@ import importlib.util
 import pathlib
 import unittest
 
+from docx import Document
+from docx.enum.section import WD_SECTION
+from docx.shared import Mm
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "paper" / "root_technical_paper.py"
+DOCX_PATH = ROOT / "output" / "docx" / "ROOT-Technical-Concept-Paper-D0.1.docx"
 APPROVED_FORBIDDEN_COPY = (
     "acceleration award", "affiliated with panasonic", "patent pending",
     "breathing sense", "zero outages", "perfect coverage",
@@ -112,6 +117,36 @@ class ContentModelTests(unittest.TestCase):
         ))).lower()
         for phrase in APPROVED_FORBIDDEN_COPY:
             self.assertNotIn(phrase.lower(), corpus)
+
+
+class DocxArtifactTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.document = Document(DOCX_PATH)
+
+    def test_a4_geometry(self):
+        section = self.document.sections[0]
+        self.assertAlmostEqual(section.page_width.mm, 210, delta=0.2)
+        self.assertAlmostEqual(section.page_height.mm, 297, delta=0.2)
+        for margin in (section.top_margin, section.right_margin, section.bottom_margin, section.left_margin):
+            self.assertAlmostEqual(margin.mm, 20, delta=0.2)
+
+    def test_heading_structure_and_metadata(self):
+        text = "\n".join(p.text for p in self.document.paragraphs)
+        for required in (
+            "ROOT: A local architecture for room-level AC comfort",
+            "ROOT-TCP-001", "D0.1", "Abstract", "1. The room-level problem",
+            "2. System architecture", "7. Evaluation methodology",
+            "8. Limitations, privacy, and safety boundary", "References", "Revision history",
+        ):
+            self.assertIn(required, text)
+        self.assertEqual(sum(p.style.name == "Title" for p in self.document.paragraphs), 1)
+
+    def test_tables_have_repeating_header_rows(self):
+        self.assertGreaterEqual(len(self.document.tables), 4)
+        for table in self.document.tables:
+            first_row_xml = table.rows[0]._tr.xml
+            self.assertIn("tblHeader", first_row_xml)
 
 
 if __name__ == "__main__":
