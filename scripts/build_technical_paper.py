@@ -7,6 +7,8 @@ import argparse
 import datetime as dt
 import os
 import pathlib
+import shutil
+import subprocess
 import sys
 import tempfile
 import zipfile
@@ -20,6 +22,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Mm, Pt, RGBColor, Twips
+import pdfplumber
+from pypdf import PdfReader
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -171,7 +175,16 @@ TOKENS = {
 }
 
 OUTPUT_PATH = ROOT / "output" / "docx" / "ROOT-Technical-Concept-Paper-D0.1.docx"
+PDF_OUTPUT_PATH = ROOT / "output" / "pdf" / "ROOT-Technical-Concept-Paper-D0.1.pdf"
+RENDER_ROOT = ROOT / "tmp" / "technical-paper-render"
 PRODUCT_IMAGE_PATH = ROOT / "assets" / "root-matte-technical-cutaway-v1.png"
+BUNDLED_PYTHON = pathlib.Path(
+    "/Users/willisdesai/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+)
+RENDER_DOCX = pathlib.Path(
+    "/Users/willisdesai/.cache/codex-runtimes/codex-primary-runtime/plugins/"
+    "openai-primary-runtime/plugins/documents/skills/documents/render_docx.py"
+)
 
 DISPLAY_HEADINGS = {
     "abstract": "Abstract",
@@ -188,6 +201,11 @@ DISPLAY_HEADINGS = {
     "revision-history": "Revision history",
     "appendix-a": "Appendix A. Controlled disclosures",
 }
+
+TOC_PAGE_KEYS = tuple(
+    key for key, heading in DISPLAY_HEADINGS.items()
+    if key == "appendix-a" or heading[:1].isdigit()
+)
 
 EVIDENCE_DEFINITIONS = {
     "Cited background": "A statement supported by an identified external source.",
@@ -769,7 +787,7 @@ def add_front_matter(
     _add_table(document, "Table 1. Document-control register.", ("Field", "Controlled value"), control_rows, (1.6, 4.9))
 
     document.add_page_break()
-    _add_heading(document, "Contents")
+    _add_heading(document, "Table of contents")
     for key in (
         "abstract",
         "room-level-problem",
@@ -1108,13 +1126,144 @@ def build_docx(
     return output_path
 
 
+def _validate_pdf(pdf_path: pathlib.Path) -> None:
+    """Reject empty, non-A4, or out-of-budget publication renders."""
+
+    if not pdf_path.is_file() or pdf_path.stat().st_size == 0:
+        raise RuntimeError(f"renderer did not produce a non-empty PDF: {pdf_path}")
+    reader = PdfReader(pdf_path)
+    if not 12 <= len(reader.pages) <= 16:
+        raise RuntimeError(f"publication PDF must contain 12-16 pages; found {len(reader.pages)}")
+    for page_number, page in enumerate(reader.pages, start=1):
+        width = float(page.mediabox.width)
+        height = float(page.mediabox.height)
+        if abs(width - 595.28) > 1.0 or abs(height - 841.89) > 1.0:
+            raise RuntimeError(
+                f"publication PDF page {page_number} is not A4: {width:.2f} x {height:.2f} pt"
+            )
+
+
+def render_canonical_pdf(
+    docx_path: pathlib.Path,
+    render_dir: pathlib.Path,
+    pdf_path: pathlib.Path,
+) -> pathlib.Path:
+    """Render ``docx_path`` with the bundled renderer and atomically publish its PDF."""
+
+    docx_path = pathlib.Path(docx_path).resolve()
+    render_dir = pathlib.Path(render_dir).resolve()
+    pdf_path = pathlib.Path(pdf_path).resolve()
+    render_root = RENDER_ROOT.resolve()
+    if not render_dir.is_relative_to(render_root):
+        raise ValueError(f"render directory must be within {render_root}: {render_dir}")
+    if not docx_path.is_file() or docx_path.stat().st_size == 0:
+        raise FileNotFoundError(f"canonical DOCX is missing or empty: {docx_path}")
+
+    if render_dir.exists():
+        shutil.rmtree(render_dir)
+    render_dir.mkdir(parents=True, exist_ok=True)
+
+    environment = os.environ.copy()
+    environment.update({"TMPDIR": "/private/tmp", "TEMP": "/private/tmp", "TMP": "/private/tmp"})
+    command = [
+        str(BUNDLED_PYTHON),
+        str(RENDER_DOCX),
+        str(docx_path),
+        "--output_dir",
+        str(render_dir),
+        "--emit_pdf",
+    ]
+    completed = subprocess.run(command, check=False, capture_output=True, text=True, env=environment)
+    if completed.returncode != 0:
+        raise RuntimeError(
+            "bundled DOCX renderer failed\n"
+            f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}"
+        )
+
+    page_images = sorted(render_dir.glob("page-*.png"), key=lambda path: int(path.stem.split("-")[-1]))
+    if not page_images or any(path.stat().st_size == 0 for path in page_images):
+        raise RuntimeError(f"renderer produced no complete page PNG set in {render_dir}")
+    emitted_pdf = render_dir / f"{docx_path.stem}.pdf"
+    if not emitted_pdf.is_file() or emitted_pdf.stat().st_size == 0:
+        raise RuntimeError(f"renderer did not emit {emitted_pdf}")
+
+    pdf_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{pdf_path.stem}-", suffix=".pdf", dir=pdf_path.parent
+    )
+    os.close(temporary_fd)
+    temporary_path = pathlib.Path(temporary_name)
+    try:
+        shutil.copyfile(emitted_pdf, temporary_path)
+        _validate_pdf(temporary_path)
+        os.replace(temporary_path, pdf_path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+    return pdf_path
+
+
+def extract_heading_pages(pdf_path: pathlib.Path) -> dict[str, int]:
+    """Return one-based pages for every numbered section and appendix heading."""
+
+    located: dict[str, int] = {}
+    with pdfplumber.open(pdf_path) as pdf:
+        for page_number, page in enumerate(pdf.pages, start=1):
+            page_text = " ".join((page.extract_text() or "").split())
+            for key in TOC_PAGE_KEYS:
+                normalized_heading = " ".join(DISPLAY_HEADINGS[key].split())
+                if normalized_heading in page_text:
+                    # The later occurrence is the body heading, not its front-matter listing.
+                    located[key] = page_number
+    return located
+
+
+def build_publication(
+    docx_path: pathlib.Path = OUTPUT_PATH,
+    pdf_path: pathlib.Path = PDF_OUTPUT_PATH,
+    render_dir: pathlib.Path = RENDER_ROOT,
+) -> tuple[pathlib.Path, pathlib.Path]:
+    """Build provisional and stable passes, then publish the canonical artifacts."""
+
+    render_dir = pathlib.Path(render_dir)
+    with tempfile.TemporaryDirectory(prefix="root-technical-paper-", dir="/private/tmp") as temp_directory:
+        temporary = pathlib.Path(temp_directory)
+        provisional_docx = build_docx(temporary / "provisional.docx")
+        provisional_pdf = temporary / "provisional.pdf"
+        render_canonical_pdf(provisional_docx, render_dir / "provisional", provisional_pdf)
+        toc_page_map = extract_heading_pages(provisional_pdf)
+        missing = [key for key in TOC_PAGE_KEYS if key not in toc_page_map]
+        if missing:
+            raise RuntimeError(f"provisional PDF is missing TOC heading pages: {missing}")
+
+        stable_docx = build_docx(docx_path, toc_page_map)
+        stable_pdf = render_canonical_pdf(stable_docx, render_dir, pdf_path)
+        stable_heading_pages = extract_heading_pages(stable_pdf)
+        if stable_heading_pages != toc_page_map:
+            raise RuntimeError(
+                "static TOC page map shifted during the stable pass: "
+                f"provisional={toc_page_map}, stable={stable_heading_pages}"
+            )
+        return stable_docx, stable_pdf
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--docx-only", action="store_true", help="Build only the canonical DOCX.")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--docx-only", action="store_true", help="Build only the canonical DOCX.")
+    modes.add_argument("--pdf-only", action="store_true", help="Render the existing canonical DOCX only.")
     parser.add_argument("--output", type=pathlib.Path, default=OUTPUT_PATH)
+    parser.add_argument("--pdf-output", type=pathlib.Path, default=PDF_OUTPUT_PATH)
+    parser.add_argument("--render-dir", type=pathlib.Path, default=RENDER_ROOT)
     args = parser.parse_args()
-    result = build_docx(args.output)
-    print(result)
+    if args.docx_only:
+        print(build_docx(args.output))
+    elif args.pdf_only:
+        print(render_canonical_pdf(args.output, args.render_dir, args.pdf_output))
+    else:
+        docx_path, pdf_path = build_publication(args.output, args.pdf_output, args.render_dir)
+        print(docx_path)
+        print(pdf_path)
 
 
 if __name__ == "__main__":

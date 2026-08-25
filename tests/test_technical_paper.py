@@ -5,13 +5,16 @@ import unittest
 import zipfile
 import xml.etree.ElementTree as ET
 
+import pdfplumber
 from docx import Document
+from pypdf import PdfReader
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "paper" / "root_technical_paper.py"
 BUILDER_PATH = ROOT / "scripts" / "build_technical_paper.py"
 DOCX_PATH = ROOT / "output" / "docx" / "ROOT-Technical-Concept-Paper-D0.1.docx"
+PDF_PATH = ROOT / "output" / "pdf" / "ROOT-Technical-Concept-Paper-D0.1.pdf"
 APPROVED_FORBIDDEN_COPY = (
     "acceleration award", "affiliated with panasonic", "patent pending",
     "breathing sense", "zero outages", "perfect coverage",
@@ -162,11 +165,22 @@ class DocxArtifactTests(unittest.TestCase):
             self.assertIn(marker, text)
 
     def test_claim_register_includes_evidence_fields(self):
-        table_text = "\n".join(
-            cell.text for table in self.document.tables for row in table.rows for cell in row.cells
+        expected_header = [
+            "Claim ID", "Status", "Scope", "Revision", "Evidence ID", "Evidence date", "Control record",
+        ]
+        register = next(
+            table for table in self.document.tables
+            if [cell.text for cell in table.rows[0].cells] == expected_header
         )
-        for heading in ("Claim ID", "Status", "Scope", "Revision", "Evidence ID", "Evidence date"):
-            self.assertIn(heading, table_text)
+        expected_claim_ids = {"CB-01", "HT-01", "HT-02", "PE-01", "PE-07"}
+        rows = {row.cells[0].text: [cell.text for cell in row.cells] for row in register.rows[1:]}
+        self.assertTrue(expected_claim_ids.issubset(rows))
+        for claim_id, cells in rows.items():
+            with self.subTest(claim_id=claim_id):
+                self.assertEqual(len(cells), len(expected_header))
+                self.assertTrue(all(cells[index].strip() for index in range(1, 7)))
+                self.assertIn("Hardware revision:", cells[6])
+                self.assertIn("Firmware revision:", cells[6])
 
     def test_product_figure_is_inline_bounded_and_has_alt_text(self):
         self.assertEqual(len(self.document.inline_shapes), 1)
@@ -260,10 +274,16 @@ class DocxBuilderTests(unittest.TestCase):
                 self.assertIn("tblHeader", table.rows[0]._tr.xml)
 
             with zipfile.ZipFile(output_path) as archive:
-                footer_xml = archive.read("word/footer1.xml").decode("utf-8")
+                footer_root = ET.fromstring(archive.read("word/footer1.xml"))
                 settings_xml = archive.read("word/settings.xml").decode("utf-8")
-            self.assertIn("PAGE", footer_xml)
-            self.assertIn("NUMPAGES", footer_xml)
+            namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+            instructions = [
+                "".join(node.itertext()).strip()
+                for node in footer_root.findall(".//w:instrText", namespace)
+            ]
+            self.assertIn("PAGE", instructions)
+            self.assertIn("NUMPAGES", instructions)
+            self.assertNotEqual(instructions.index("PAGE"), instructions.index("NUMPAGES"))
             self.assertIn("updateFields", settings_xml)
 
     def test_build_docx_is_byte_deterministic(self):
@@ -273,6 +293,56 @@ class DocxBuilderTests(unittest.TestCase):
             second = self.builder.build_docx(directory / "second.docx")
 
             self.assertEqual(first.read_bytes(), second.read_bytes())
+
+
+class PdfArtifactTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location("build_technical_paper_pdf", BUILDER_PATH)
+        cls.builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.builder)
+        cls.reader = PdfReader(PDF_PATH)
+        with pdfplumber.open(PDF_PATH) as pdf:
+            cls.text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+
+    def test_page_geometry_and_count(self):
+        self.assertGreaterEqual(len(self.reader.pages), 12)
+        self.assertLessEqual(len(self.reader.pages), 16)
+        for page in self.reader.pages:
+            width = float(page.mediabox.width)
+            height = float(page.mediabox.height)
+            self.assertAlmostEqual(width, 595.28, delta=1.0)
+            self.assertAlmostEqual(height, 841.89, delta=1.0)
+
+    def test_required_pdf_content(self):
+        for marker in (
+            "ROOT-TCP-001", "D0.1", "Developer preview", "Abstract",
+            "System architecture", "Evaluation methodology",
+            "Limitations, privacy, and safety boundary", "References",
+            "Revision history", "CB-01", "HT-01", "PE-07",
+        ):
+            self.assertIn(marker, self.text)
+
+    def test_table_of_contents_has_page_numbers(self):
+        self.assertRegex(
+            self.text,
+            r"Table of contents[\s\S]{0,5000}1\. The room-level problem[ .]+[0-9]+",
+        )
+
+    def test_pdf_has_no_forbidden_copy(self):
+        lowered = self.text.lower()
+        for phrase in (
+            "acceleration award", "affiliated with panasonic", "patent pending",
+            "breathing sense", "zero outages", "perfect coverage",
+        ):
+            self.assertNotIn(phrase, lowered)
+
+    def test_heading_page_extraction_is_complete(self):
+        expected_keys = {
+            key for key, heading in self.builder.DISPLAY_HEADINGS.items()
+            if key == "appendix-a" or heading[:1].isdigit()
+        }
+        self.assertEqual(set(self.builder.extract_heading_pages(PDF_PATH)), expected_keys)
 
 
 if __name__ == "__main__":
