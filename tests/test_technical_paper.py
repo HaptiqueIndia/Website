@@ -3,6 +3,7 @@ import pathlib
 import tempfile
 import unittest
 import zipfile
+import xml.etree.ElementTree as ET
 
 from docx import Document
 
@@ -148,6 +149,56 @@ class DocxArtifactTests(unittest.TestCase):
         for table in self.document.tables:
             first_row_xml = table.rows[0]._tr.xml
             self.assertIn("tblHeader", first_row_xml)
+
+    def test_figures_and_protocols_are_complete(self):
+        text = "\n".join(p.text for p in self.document.paragraphs)
+        for marker in (
+            "Figure 1. Conceptual four-stage control loop",
+            "Figure 2. Illustrative ROOT product cutaway",
+            "Conceptual architecture, not a measured result",
+            "Illustrative image, not component or production evidence",
+            "PE-01", "PE-02", "PE-03", "PE-04", "PE-05", "PE-06", "PE-07",
+        ):
+            self.assertIn(marker, text)
+
+    def test_claim_register_includes_evidence_fields(self):
+        table_text = "\n".join(
+            cell.text for table in self.document.tables for row in table.rows for cell in row.cells
+        )
+        for heading in ("Claim ID", "Status", "Scope", "Revision", "Evidence ID", "Evidence date"):
+            self.assertIn(heading, table_text)
+
+    def test_product_figure_is_inline_bounded_and_has_alt_text(self):
+        self.assertEqual(len(self.document.inline_shapes), 1)
+        self.assertLessEqual(self.document.inline_shapes[0].width.mm, 120.0)
+        caption = next(
+            paragraph for paragraph in self.document.paragraphs
+            if paragraph.text.startswith("Figure 2. Illustrative ROOT product cutaway")
+        )
+        self.assertIs(caption.paragraph_format.keep_with_next, False)
+        with zipfile.ZipFile(DOCX_PATH) as archive:
+            root = ET.fromstring(archive.read("word/document.xml"))
+        namespace = {"wp": "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"}
+        descriptions = [node.get("descr", "") for node in root.findall(".//wp:docPr", namespace)]
+        self.assertIn(
+            "Illustrative cutaway of the proposed ROOT room-comfort controller; not component or production evidence.",
+            descriptions,
+        )
+
+    def test_evaluation_matrix_has_exact_rows_and_acceptance_rule(self):
+        expected_header = [
+            "ID", "Evaluation", "Conditions and comparator", "Primary outputs", "Acceptance rule",
+        ]
+        matrix = next(
+            table for table in self.document.tables
+            if [cell.text for cell in table.rows[0].cells] == expected_header
+        )
+        self.assertEqual(len(matrix.rows), 8)
+        self.assertEqual([row.cells[0].text for row in matrix.rows[1:]], [f"PE-{i:02d}" for i in range(1, 8)])
+        self.assertEqual(
+            {row.cells[4].text for row in matrix.rows[1:]},
+            {"Pre-registered before testing"},
+        )
 
 
 class DocxBuilderTests(unittest.TestCase):

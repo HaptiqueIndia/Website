@@ -146,6 +146,14 @@ TOKENS = {
         "after_pt": 4,
     },
     "contents": {"right_tab_mm": 170},
+    "figures": {
+        "product_width_mm": 105,
+        "control_loop_weights": (1, 1, 1, 1),
+        "alt_text": (
+            "Illustrative cutaway of the proposed ROOT room-comfort controller; "
+            "not component or production evidence."
+        ),
+    },
     "cover": {
         "top_spacer_after_pt": 78,
         "statement_before_pt": 18,
@@ -163,6 +171,7 @@ TOKENS = {
 }
 
 OUTPUT_PATH = ROOT / "output" / "docx" / "ROOT-Technical-Concept-Paper-D0.1.docx"
+PRODUCT_IMAGE_PATH = ROOT / "assets" / "root-matte-technical-cutaway-v1.png"
 
 DISPLAY_HEADINGS = {
     "abstract": "Abstract",
@@ -540,6 +549,58 @@ def _add_table(
     after.paragraph_format.space_after = Pt(TOKENS["tables"]["after_paragraph_pt"])
 
 
+def add_control_loop_figure(document: Document) -> None:
+    """Add the conceptual four-stage control-loop figure as a technical grid."""
+
+    stages = (
+        ("1 | Sense", "Sample temperature, humidity, and bounded presence context."),
+        ("2 | Interpret", "Estimate local room context without inferring safety-critical state."),
+        ("3 | Decide", "Apply bounded setpoints, command rates, override, and fallback rules."),
+        ("4 | Transmit", "Emit a learned IR command without assuming confirmed AC state."),
+    )
+    table = document.add_table(rows=2, cols=len(stages))
+    for index, (stage, description) in enumerate(stages):
+        table.rows[0].cells[index].text = stage
+        table.rows[1].cells[index].text = description
+    set_fixed_table_geometry(table, _allocate_widths(TOKENS["figures"]["control_loop_weights"]))
+    _format_table(table)
+
+    caption = document.add_paragraph(
+        "Figure 1. Conceptual four-stage control loop. Conceptual architecture, not a measured result. "
+        "Status: Hypothesis / design target. Claim ID: HT-01.",
+        style="Caption",
+    )
+    caption.paragraph_format.keep_with_next = True
+    document.add_paragraph(
+        "Signal path: environmental and bounded presence inputs -> local interpretation -> bounded local "
+        "decision -> learned IR transmission. The proposed loop does not provide confirmed AC-state feedback."
+    )
+
+
+def add_product_figure(document: Document, image_path: pathlib.Path) -> None:
+    """Add the approved illustrative product cutaway as a bounded inline image."""
+
+    image_path = pathlib.Path(image_path)
+    if not image_path.is_file():
+        raise FileNotFoundError(f"product figure not found: {image_path}")
+    image_paragraph = document.add_paragraph()
+    image_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    image_paragraph.paragraph_format.keep_with_next = True
+    inline_shape = image_paragraph.add_run().add_picture(
+        str(image_path),
+        width=Mm(TOKENS["figures"]["product_width_mm"]),
+    )
+    inline_shape._inline.docPr.set("descr", TOKENS["figures"]["alt_text"])
+    inline_shape._inline.docPr.set("title", "Illustrative ROOT product cutaway")
+
+    caption = document.add_paragraph(
+        "Figure 2. Illustrative ROOT product cutaway. Illustrative image, not component or production "
+        "evidence. Status: Hypothesis / design target. Claim ID: HT-03.",
+        style="Caption",
+    )
+    caption.paragraph_format.keep_with_next = False
+
+
 def _add_heading(document: Document, text: str, level: int = 1) -> None:
     paragraph = document.add_paragraph(text, style=f"Heading {level}")
     resolved = TOKENS["styles"][f"heading_{level}"]
@@ -757,13 +818,25 @@ def add_front_matter(
 def _claim_rows() -> list[tuple[str, ...]]:
     rows = []
     for claim in CLAIMS:
-        revision = (
-            f"HW/FW: {claim['hardware_revision']}\n"
-            f"Claim rev.: {claim['revision']}"
+        control_record = (
+            f"Wording: {claim['wording']}\n"
+            f"Owner: {claim['owner']}\n"
+            f"Review date: {claim['review_date']}\n"
+            f"Superseded wording: {claim['superseded_wording'] or 'None recorded'}\n"
+            f"Hardware revision: {claim['hardware_revision']}\n"
+            f"Firmware revision: {claim['firmware_revision']}"
         )
-        evidence = f"{claim['evidence_id']}\n{claim['evidence_date']}"
-        wording = f"{claim['wording']}\nOwner: {claim['owner']} | Review: {claim['review_date']}"
-        rows.append((claim["id"], claim["status"], claim["scope"], revision, evidence, wording))
+        rows.append(
+            (
+                claim["id"],
+                claim["status"],
+                claim["scope"],
+                claim["revision"],
+                claim["evidence_id"],
+                claim["evidence_date"],
+                control_record,
+            )
+        )
     return rows
 
 
@@ -771,19 +844,50 @@ def _protocol_rows() -> list[tuple[str, ...]]:
     rows = []
     for protocol in PROTOCOLS:
         basis = f"{protocol['conditions']}\nComparator / ground truth: {protocol['comparator_ground_truth']}"
-        outcomes = (
-            "Primary: " + "; ".join(protocol["primary_outcomes"]) +
-            "\nSecondary: " + "; ".join(protocol["secondary_outcomes"])
+        outcomes = "; ".join(protocol["primary_outcomes"])
+        rows.append(
+            (
+                protocol["claim_id"],
+                protocol["title"],
+                basis,
+                outcomes,
+                "Pre-registered before testing",
+            )
         )
-        planning = (
-            f"Interval: {protocol['sample_interval']} | Trials: {protocol['repeated_trials']}\n"
-            f"Acceptance: {protocol['acceptance_criterion']} | Missing data: {protocol['exclusions_missing_data']}\n"
-            f"Uncertainty: {protocol['uncertainty']} | Artifact: {protocol['retained_evidence_artifact']}\n"
-            f"HW/FW: {protocol['hardware_revision']} / {protocol['firmware_revision']}\n"
-            f"Report: {protocol['reporting_requirements']}"
-        )
-        rows.append((protocol["id"], f"{protocol['claim_id']}\n{protocol['title']}", basis, outcomes, planning))
     return rows
+
+
+def add_claim_register(document: Document) -> None:
+    """Add every canonical claim and its complete evidence-control record."""
+
+    _add_heading(document, DISPLAY_HEADINGS["claim-register"])
+    document.add_paragraph(
+        "The register below separates cited background, unmeasured design targets, and planned evaluations. "
+        "It contains no claim assigned to Implemented prototype behavior."
+    )
+    _add_table(
+        document,
+        "Table 3. Claim and evidence register.",
+        ("Claim ID", "Status", "Scope", "Revision", "Evidence ID", "Evidence date", "Control record"),
+        _claim_rows(),
+        (0.55, 1.0, 1.0, 0.85, 0.95, 0.75, 2.05),
+    )
+
+
+def add_protocol_matrix(document: Document) -> None:
+    """Add the seven-row planned-evaluation matrix without unapproved thresholds."""
+
+    document.add_paragraph(
+        "Planned evaluation IDs: PE-01, PE-02, PE-03, PE-04, PE-05, PE-06, and PE-07. "
+        "Each acceptance rule will be pre-registered before testing; no threshold is approved in D0.1."
+    )
+    _add_table(
+        document,
+        "Table 4. Planned evaluation matrix.",
+        ("ID", "Evaluation", "Conditions and comparator", "Primary outputs", "Acceptance rule"),
+        _protocol_rows(),
+        (0.6, 1.0, 2.15, 1.55, 1.2),
+    )
 
 
 def add_technical_body(document: Document, numbering: dict[str, int]) -> None:
@@ -793,6 +897,7 @@ def add_technical_body(document: Document, numbering: dict[str, int]) -> None:
     _add_section_copy(document, by_id["abstract"], DISPLAY_HEADINGS["abstract"])
     _add_section_copy(document, by_id["room-level-problem"], DISPLAY_HEADINGS["room-level-problem"])
     _add_section_copy(document, by_id["architecture"], DISPLAY_HEADINGS["architecture"])
+    add_control_loop_figure(document)
     _add_heading(document, "Proposed control sequence", 2)
     for item in (
         "Sense temperature, humidity, and a bounded room-presence context near the occupied location.",
@@ -804,20 +909,10 @@ def add_technical_body(document: Document, numbering: dict[str, int]) -> None:
 
     _add_section_copy(document, by_id["connectivity"], DISPLAY_HEADINGS["connectivity"])
     _add_section_copy(document, by_id["sensing"], DISPLAY_HEADINGS["sensing"])
+    add_product_figure(document, PRODUCT_IMAGE_PATH)
     _add_section_copy(document, by_id["placement"], DISPLAY_HEADINGS["placement"])
 
-    _add_heading(document, DISPLAY_HEADINGS["claim-register"])
-    document.add_paragraph(
-        "The register below separates cited background, unmeasured design targets, and planned evaluations. "
-        "It contains no claim assigned to Implemented prototype behavior."
-    )
-    _add_table(
-        document,
-        "Table 3. Claim and evidence register.",
-        ("ID", "Status", "Scope", "Revision basis", "Evidence", "Controlled wording"),
-        _claim_rows(),
-        (0.6, 1.15, 1.2, 1.3, 1.15, 2.1),
-    )
+    add_claim_register(document)
 
     _add_section_copy(document, by_id["evaluation"], DISPLAY_HEADINGS["evaluation"])
     _add_heading(document, "Protocol-wide reporting rules", 2)
@@ -828,13 +923,7 @@ def add_technical_body(document: Document, numbering: dict[str, int]) -> None:
         "Keep simulator outputs distinct from measured results.",
     ):
         _add_list_item(document, item, numbering["bullet"])
-    _add_table(
-        document,
-        "Table 4. Planned evaluation protocol register.",
-        ("Protocol", "Claim / title", "Conditions and comparator", "Outcomes", "Pre-registered planning contract"),
-        _protocol_rows(),
-        (0.95, 1.0, 1.4, 1.2, 1.95),
-    )
+    add_protocol_matrix(document)
 
     _add_section_copy(document, by_id["limitations"], DISPLAY_HEADINGS["limitations"])
     _add_section_copy(document, by_id["company"], DISPLAY_HEADINGS["company"])
