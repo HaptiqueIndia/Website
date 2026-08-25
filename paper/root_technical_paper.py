@@ -204,9 +204,71 @@ CLAIMS = (
     },
 )
 
+CLAIMS = tuple(
+    {
+        **claim,
+        "owner": "Haptique Electronics Pvt. Ltd.",
+        "review_date": "25 August 2026",
+        "superseded_wording": None,
+    }
+    for claim in CLAIMS
+)
+
+CONTROLLED_DISCLOSURES = (
+    {
+        "id": "CD-01",
+        "disclosure_type": "Intended use and medical boundary",
+        "exact_wording": "ROOT is intended for general room-comfort control. It is not a medical device and is not intended to diagnose, prevent, monitor, predict, mitigate, or treat disease, injury, disability, a physiological condition, sleep, or a vital sign.",
+        "source_or_approval_record": "WHITEPAPER-D0.1 / approved controlled disclosure",
+        "owner": "Haptique Electronics Pvt. Ltd.",
+        "approval_date": "25 August 2026",
+        "next_review_date": "Not yet assigned",
+    },
+    {
+        "id": "CD-02",
+        "disclosure_type": "Safety role",
+        "exact_wording": "ROOT is not a safety-critical, emergency, or life-support controller. Users must retain the original AC remote and access to the AC's manual controls.",
+        "source_or_approval_record": "WHITEPAPER-D0.1 / approved controlled disclosure",
+        "owner": "Haptique Electronics Pvt. Ltd.",
+        "approval_date": "25 August 2026",
+        "next_review_date": "Not yet assigned",
+    },
+    {
+        "id": "CD-03",
+        "disclosure_type": "Company identity",
+        "exact_wording": "Haptique Electronics Pvt. Ltd. is the company developing ROOT as a room-comfort product concept. ROOT is a product and brand, not a separate legal entity.",
+        "source_or_approval_record": "WHITEPAPER-D0.1 / company-supplied disclosure, not independently verified",
+        "owner": "Haptique Electronics Pvt. Ltd.",
+        "approval_date": "25 August 2026",
+        "next_review_date": "Not yet assigned",
+    },
+    {
+        "id": "CD-04",
+        "disclosure_type": "Privacy and data boundary",
+        "exact_wording": "A future Bluetooth proximity feature may process a paired identifier and received signal strength. Storage, retention, deletion, reset behavior, sharing, and location permissions are not yet assigned.",
+        "source_or_approval_record": "WHITEPAPER-D0.1 / approved controlled disclosure",
+        "owner": "Haptique Electronics Pvt. Ltd.",
+        "approval_date": "25 August 2026",
+        "next_review_date": "Not yet assigned",
+    },
+    {
+        "id": "CD-05",
+        "disclosure_type": "Recognition and patent omission",
+        "exact_wording": "This revision intentionally omits third-party recognition and patent-status statements. Those disclosures require verified identity, filing, scope, and approval records before inclusion.",
+        "source_or_approval_record": "WHITEPAPER-D0.1 / approved omission record",
+        "owner": "Haptique Electronics Pvt. Ltd.",
+        "approval_date": "25 August 2026",
+        "next_review_date": "Not yet assigned",
+    },
+)
+
 REFERENCES = (
     {
         "id": "REF-01",
+        "authors": (
+            "Haiyan Yan", "Yawei Li", "Thomas Parkinson", "Stefano Schiavon", "Hui Zhang",
+            "Rui Sun", "Shengkai Zhao", "Wei Zhao", "Zhen Sun", "Fangning Shi",
+        ),
         "title": "Human thermal responses to non-uniform cooling from intermittently operated split air conditioners",
         "publisher": "Building and Environment",
         "publication_date": "2026",
@@ -224,14 +286,33 @@ REFERENCES = (
     },
 )
 
+def _planned_protocol(identifier, claim_id, title, conditions, comparator_ground_truth, primary_outcomes, secondary_outcomes):
+    return {
+        "id": identifier,
+        "claim_id": claim_id,
+        "title": title,
+        "conditions": conditions,
+        "comparator_ground_truth": comparator_ground_truth,
+        "sample_interval": "Defined before testing",
+        "repeated_trials": "Defined before testing",
+        "primary_outcomes": primary_outcomes,
+        "secondary_outcomes": secondary_outcomes,
+        "acceptance_criterion": "Defined before testing",
+        "exclusions_missing_data": "Defined before testing",
+        "uncertainty": "Defined before testing",
+        "retained_evidence_artifact": "Not yet assigned",
+        "reporting_requirements": "Trial counts, negative results, protocol deviations, raw and derived data location, and analysis version.",
+    }
+
+
 PROTOCOLS = (
-    {"id": "PROTOCOL-01", "claim_id": "PE-01", "title": "Climate sensing", "primary_outcomes": ("bias", "mean absolute error", "repeatability", "measurement uncertainty"), "acceptance_criterion": "Fixed before testing"},
-    {"id": "PROTOCOL-02", "claim_id": "PE-02", "title": "Presence sensing", "primary_outcomes": ("sensitivity", "specificity or false-positive rate", "response latency"), "acceptance_criterion": "Fixed before testing"},
-    {"id": "PROTOCOL-03", "claim_id": "PE-03", "title": "IR interoperability", "primary_outcomes": ("model-level successes", "model-level failures"), "acceptance_criterion": "Fixed before testing"},
-    {"id": "PROTOCOL-04", "claim_id": "PE-04", "title": "Offline control", "primary_outcomes": ("sensing, decision, command, reboot, and reconnection behavior",), "acceptance_criterion": "Fixed before testing"},
-    {"id": "PROTOCOL-05", "claim_id": "PE-05", "title": "Setup", "primary_outcomes": ("completion rate", "median and range or interquartile range", "assistance", "retries", "failure reasons"), "acceptance_criterion": "Fixed before testing"},
-    {"id": "PROTOCOL-06", "claim_id": "PE-06", "title": "Power behavior", "primary_outcomes": ("nominal draw", "peak draw", "brownout and restart behavior", "recovery state"), "acceptance_criterion": "Fixed before testing"},
-    {"id": "PROTOCOL-07", "claim_id": "PE-07", "title": "Room comfort stability", "primary_outcomes": ("occupant-zone deviation", "overshoot", "cycling", "humidity"), "acceptance_criterion": "Fixed before testing"},
+    _planned_protocol("PROTOCOL-01", "PE-01", "Climate sensing", "Relevant temperature and humidity conditions", "Traceable reference logger", ("bias", "mean absolute error", "repeatability", "measurement uncertainty"), ("sampling interval", "stabilization time")),
+    _planned_protocol("PROTOCOL-02", "PE-02", "Presence sensing", "Occupied, unoccupied, stationary, moving, obstructed, placement, and false-trigger scenarios", "Timestamped ground truth", ("sensitivity", "specificity or false-positive rate", "response latency"), ("false-trigger scenarios",)),
+    _planned_protocol("PROTOCOL-03", "PE-03", "IR interoperability", "Declared stratified AC sample; repeated distances, angles, and line-of-sight conditions", "Declared AC brand, model, and command set", ("model-level successes", "model-level failures"), ("distance", "angle", "line-of-sight condition")),
+    _planned_protocol("PROTOCOL-04", "PE-04", "Offline control", "Wi-Fi and internet disabled after setup for a stated duration", "Configured device before network loss", ("sensing, decision, command, reboot, and reconnection behavior",), ("network independence distinct from electrical uptime",)),
+    _planned_protocol("PROTOCOL-05", "PE-05", "Setup", "First-time users completing one defined setup flow", "Observed user task completion", ("completion rate", "median and range or interquartile range"), ("assistance", "retries", "failure reasons")),
+    _planned_protocol("PROTOCOL-06", "PE-06", "Power behavior", "Declared supported input conditions and brownout/restart scenarios", "Declared measurement equipment", ("nominal draw", "peak draw", "brownout and restart behavior"), ("recovery state",)),
+    _planned_protocol("PROTOCOL-07", "PE-07", "Room comfort stability", "Recorded room geometry, placement, AC model, loads, outdoor conditions, and occupancy", "Randomized or counterbalanced baseline-versus-ROOT comparison", ("occupant-zone deviation", "overshoot", "cycling", "humidity"), ("recorded room and operating conditions",)),
 )
 
 REVISION_HISTORY = (

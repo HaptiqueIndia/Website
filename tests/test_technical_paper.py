@@ -34,20 +34,69 @@ class ContentModelTests(unittest.TestCase):
             ],
         )
 
-    def test_claim_register_has_required_fields(self):
+    def test_claim_register_has_required_fields_and_uses_no_prototype_status(self):
         paper = self.load_module()
-        required = {"id", "status", "scope", "revision", "evidence_id", "evidence_date", "wording"}
+        required = {
+            "id", "status", "scope", "revision", "evidence_id", "evidence_date",
+            "wording", "owner", "review_date", "superseded_wording",
+        }
         self.assertTrue({"CB-01", "HT-01", "HT-02", "PE-01", "PE-07"}.issubset(
             {claim["id"] for claim in paper.CLAIMS}
         ))
         for claim in paper.CLAIMS:
             self.assertTrue(required.issubset(claim))
+        self.assertNotIn("Implemented prototype behavior", {claim["status"] for claim in paper.CLAIMS})
+
+    def test_controlled_disclosures_have_approval_provenance(self):
+        paper = self.load_module()
+        required = {
+            "id", "disclosure_type", "exact_wording", "source_or_approval_record",
+            "owner", "approval_date", "next_review_date",
+        }
+        disclosure_types = {disclosure["disclosure_type"] for disclosure in paper.CONTROLLED_DISCLOSURES}
+        self.assertEqual(
+            disclosure_types,
+            {"Intended use and medical boundary", "Safety role", "Company identity", "Privacy and data boundary", "Recognition and patent omission"},
+        )
+        for disclosure in paper.CONTROLLED_DISCLOSURES:
+            self.assertTrue(required.issubset(disclosure))
+
+    def test_protocols_have_complete_planning_contract(self):
+        paper = self.load_module()
+        required = {
+            "conditions", "comparator_ground_truth", "sample_interval", "repeated_trials",
+            "primary_outcomes", "secondary_outcomes", "acceptance_criterion",
+            "exclusions_missing_data", "uncertainty", "retained_evidence_artifact",
+            "reporting_requirements",
+        }
+        for protocol in paper.PROTOCOLS:
+            self.assertTrue(required.issubset(protocol))
+            self.assertEqual(protocol["acceptance_criterion"], "Defined before testing")
+
+    def test_references_include_required_authorship_or_organization(self):
+        paper = self.load_module()
+        references = {reference["id"]: reference for reference in paper.REFERENCES}
+        self.assertEqual(
+            references["REF-01"]["authors"],
+            ("Haiyan Yan", "Yawei Li", "Thomas Parkinson", "Stefano Schiavon", "Hui Zhang", "Rui Sun", "Shengkai Zhao", "Wei Zhao", "Zhen Sun", "Fangning Shi"),
+        )
+        self.assertEqual(references["REF-02"]["organization"], "Bluetooth SIG")
 
     def test_copy_respects_disclosure_boundary(self):
         paper = self.load_module()
-        corpus = "\n".join(
-            [section["title"] + "\n" + "\n".join(section["paragraphs"]) for section in paper.SECTIONS]
-        ).lower()
+        def strings(value):
+            if isinstance(value, str):
+                return [value]
+            if isinstance(value, dict):
+                return [item for nested in value.values() for item in strings(nested)]
+            if isinstance(value, (tuple, list)):
+                return [item for nested in value for item in strings(nested)]
+            return []
+
+        corpus = "\n".join(strings((
+            paper.DOCUMENT, paper.SECTIONS, paper.CLAIMS, paper.REFERENCES,
+            paper.PROTOCOLS, paper.CONTROLLED_DISCLOSURES, paper.REVISION_HISTORY,
+        ))).lower()
         for phrase in paper.FORBIDDEN_COPY:
             self.assertNotIn(phrase.lower(), corpus)
 
