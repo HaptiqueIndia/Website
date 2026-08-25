@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [home, sitemap, about, privacy, comingSoon, siteGate, product, style] = await Promise.all([
+const [home, sitemap, about, privacy, comingSoon, siteGate, product, style, favicon] = await Promise.all([
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../sitemap.html', import.meta.url), 'utf8'),
   readFile(new URL('../about.html', import.meta.url), 'utf8'),
@@ -9,7 +9,8 @@ const [home, sitemap, about, privacy, comingSoon, siteGate, product, style] = aw
   readFile(new URL('../coming-soon.html', import.meta.url), 'utf8'),
   readFile(new URL('../site-gate.js', import.meta.url), 'utf8'),
   readFile(new URL('../product-details.html', import.meta.url), 'utf8'),
-  readFile(new URL('../style.css', import.meta.url), 'utf8')
+  readFile(new URL('../style.css', import.meta.url), 'utf8'),
+  readFile(new URL('../assets/root-favicon.svg', import.meta.url), 'utf8')
 ]);
 
 const primaryNav = home.match(/<ul class="nav-links">([\s\S]*?)<\/ul>/)?.[1] ?? '';
@@ -54,11 +55,18 @@ assert.doesNotMatch(comingSoon, /Discuss on Discord|Haptique Electronics Pvt\. L
 assert.match(comingSoon, /<a class="ac-coming-soon-discord" href="https:\/\/discord\.gg\/xvFbX8RA"[^>]*>\s*<svg[^>]+viewBox="0 0 24 24"[\s\S]*<\/svg>\s*<\/a>/i, 'coming-soon page should show an icon-only Discord invite');
 assert.match(style, /\.ac-coming-soon-page\s*\{[^}]*overflow-x:hidden;[^}]*overflow-y:auto;/i, 'coming-soon page should allow vertical scrolling on short mobile viewports');
 assert.match(style, /\.ac-coming-soon-discord\s*\{[^}]*top:[^;]+;[^}]*right:[^;]+;[^}]*color:var\(--ac-ink\);[^}]*background:transparent;[^}]*border-radius:0;/i, 'coming-soon Discord icon should be black, unboxed, and top-right');
+assert.match(style, /\.ac-coming-soon-discord\s*\{[^}]*width:56px;[^}]*height:56px;/i, 'coming-soon Discord icon should have a visible desktop tap target');
+assert.match(style, /\.ac-coming-soon-discord\s+svg\s*\{[^}]*width:40px;[^}]*height:40px;/i, 'coming-soon Discord mark should be prominent on mobile');
 assert.match(siteGate, /localhost|127\.0\.0\.1/i, 'site gate should allow local developer review');
 assert.match(siteGate, /coming-soon\.html/i, 'site gate should redirect public traffic to coming-soon');
 for (const page of [home, sitemap, about, privacy]) {
   assert.match(page, /<script src="site-gate\.js"/i, 'public pages should load the site gate');
 }
+for (const [name, page] of [['homepage', home], ['product page', product], ['about page', about], ['privacy page', privacy], ['sitemap page', sitemap], ['coming-soon page', comingSoon]]) {
+  assert.match(page, /<link rel="icon" type="image\/svg\+xml" href="assets\/root-favicon\.svg"\s*\/?>/i, `${name} should load the ROOT favicon`);
+}
+assert.match(favicon, /<svg[^>]+viewBox="0 0 64 64"/i, 'ROOT favicon should be a square SVG mark');
+assert.match(favicon, /<text[^>]*>R<\/text>/i, 'ROOT favicon should contain the ROOT mark');
 assert.doesNotMatch(product, /Ask about compatibility/i, 'product page should not show the compatibility CTA');
 assert.doesNotMatch(product, /<a href="about\.html">About<\/a>/i, 'product page should not show the About link');
 assert.doesNotMatch(product, /ac-product-hero__eyebrow[\s\S]*?>ROOT<\/p>/i, 'product hero should not show a redundant ROOT eyebrow');
