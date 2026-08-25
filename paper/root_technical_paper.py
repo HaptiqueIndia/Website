@@ -35,7 +35,8 @@ SECTIONS = (
         "title": "A proposed local architecture for room-level AC comfort.",
         "paragraphs": (
             "ROOT is a proposed controller for IR-operated split air conditioners. Its design thesis is to sense conditions closer to an occupied location, make bounded control decisions on the device, and transmit adjustments through the AC's existing infrared interface.",
-            "This paper describes the intended architecture, its control and privacy boundaries, and the evaluation methods required before product-performance statements can be made. It reports no measured product-performance result. All unmeasured ROOT behavior is classified as a hypothesis, design target, or planned evaluation.",
+            "The paper limits its scope to an engineering concept: proposed climate and presence inputs, Bluetooth-assisted configuration, infrared learning and transmission, placement effects, on-device decision boundaries, and failure modes that must preserve manual AC control. It distinguishes cited HVAC context from ROOT-specific hypotheses and records the hardware and firmware revisions to which future evidence must apply.",
+            "Seven planned evaluations define how climate sensing, presence sensing, infrared interoperability, offline control, setup, power behavior, and room-comfort stability are to be tested. Each protocol requires stated conditions, comparators, sampling, repeated trials, outcomes, pre-specified acceptance criteria, missing-data handling, uncertainty, and retained artifacts. This revision reports no measured product-performance result, establishes no compatibility, accuracy, reliability, comfort, or energy claim, and treats every unmeasured behavior as a hypothesis, design target, or planned evaluation.",
         ),
     },
     {

@@ -171,6 +171,8 @@ TOKENS = {
         "detail_pt": 9,
         "owner_before_pt": 0,
         "owner_pt": 9,
+        "review_before_pt": 0,
+        "review_pt": 9,
     },
 }
 
@@ -745,13 +747,20 @@ def add_cover(document: Document) -> None:
     detail.paragraph_format.space_before = Pt(TOKENS["cover"]["detail_before_pt"])
     detail.paragraph_format.space_after = Pt(TOKENS["cover"]["detail_after_pt"])
     detail_run = detail.add_run(
-        f"{DOCUMENT['publication_status']}  |  Issued {DOCUMENT['issue_date']}"
+        f"{DOCUMENT['publication_status']}  |  Issued: {DOCUMENT['issue_date']}"
     )
     set_run_font(detail_run, size=TOKENS["cover"]["detail_pt"], color=TOKENS["muted"])
     owner = document.add_paragraph()
     owner.paragraph_format.space_before = Pt(TOKENS["cover"]["owner_before_pt"])
-    owner_run = owner.add_run(DOCUMENT["owner"])
+    owner_run = owner.add_run(f"Owner: {DOCUMENT['owner']}")
     set_run_font(owner_run, size=TOKENS["cover"]["owner_pt"], color=TOKENS["muted"])
+    review = document.add_paragraph()
+    review.paragraph_format.space_before = Pt(TOKENS["cover"]["review_before_pt"])
+    review_run = review.add_run(
+        f"Technical reviewer: {DOCUMENT['technical_reviewer']}  |  "
+        f"Evidence cutoff: {DOCUMENT['evidence_cutoff']}"
+    )
+    set_run_font(review_run, size=TOKENS["cover"]["review_pt"], color=TOKENS["muted"])
     document.add_page_break()
 
 
@@ -861,15 +870,29 @@ def _claim_rows() -> list[tuple[str, ...]]:
 def _protocol_rows() -> list[tuple[str, ...]]:
     rows = []
     for protocol in PROTOCOLS:
-        basis = f"{protocol['conditions']}\nComparator / ground truth: {protocol['comparator_ground_truth']}"
-        outcomes = "; ".join(protocol["primary_outcomes"])
+        identity = f"{protocol['claim_id']}\n{protocol['id']}\n{protocol['title']}"
+        controlled_setup = (
+            f"Hardware revision: {protocol['hardware_revision']}\n"
+            f"Firmware revision: {protocol['firmware_revision']}\n"
+            f"Conditions: {protocol['conditions']}\n"
+            f"Comparator / ground truth: {protocol['comparator_ground_truth']}\n"
+            f"Sample interval: {protocol['sample_interval']}\n"
+            f"Repeated trials: {protocol['repeated_trials']}"
+        )
+        measurement_record = (
+            f"Primary outcomes: {'; '.join(protocol['primary_outcomes'])}\n"
+            f"Secondary outcomes: {'; '.join(protocol['secondary_outcomes'])}\n"
+            f"Acceptance criterion: {protocol['acceptance_criterion']}\n"
+            f"Exclusions / missing data: {protocol['exclusions_missing_data']}\n"
+            f"Uncertainty: {protocol['uncertainty']}\n"
+            f"Retained artifact: {protocol['retained_evidence_artifact']}\n"
+            f"Reporting: {protocol['reporting_requirements']}"
+        )
         rows.append(
             (
-                protocol["claim_id"],
-                protocol["title"],
-                basis,
-                outcomes,
-                "Pre-registered before testing",
+                identity,
+                controlled_setup,
+                measurement_record,
             )
         )
     return rows
@@ -901,10 +924,10 @@ def add_protocol_matrix(document: Document) -> None:
     )
     _add_table(
         document,
-        "Table 4. Planned evaluation matrix.",
-        ("ID", "Evaluation", "Conditions and comparator", "Primary outputs", "Acceptance rule"),
+        "Table 4. Planned evaluation protocol register.",
+        ("Evaluation", "Controlled setup", "Measurement and decision record"),
         _protocol_rows(),
-        (0.6, 1.0, 2.15, 1.55, 1.2),
+        (1.0, 2.8, 3.0),
     )
 
 

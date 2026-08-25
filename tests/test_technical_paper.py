@@ -52,6 +52,14 @@ class ContentModelTests(unittest.TestCase):
             ],
         )
 
+    def test_abstract_meets_technical_paper_word_budget(self):
+        paper = self.load_module()
+        abstract = next(section for section in paper.SECTIONS if section["id"] == "abstract")
+        word_count = len(" ".join(abstract["paragraphs"]).split())
+
+        self.assertGreaterEqual(word_count, 150)
+        self.assertLessEqual(word_count, 220)
+
     def test_claim_register_has_required_fields_and_uses_no_prototype_status(self):
         paper = self.load_module()
         required = {
@@ -159,6 +167,27 @@ class DocxArtifactTests(unittest.TestCase):
             self.assertIn(required, text)
         self.assertEqual(sum(p.style.name == "Title" for p in self.document.paragraphs), 1)
 
+    def test_cover_visibly_carries_required_document_control(self):
+        with zipfile.ZipFile(DOCX_PATH) as archive:
+            root = ET.fromstring(archive.read("word/document.xml"))
+        namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+        body = root.find("w:body", namespace)
+        cover_fragments = []
+        for child in body:
+            cover_fragments.extend(node.text or "" for node in child.findall(".//w:t", namespace))
+            if child.find(".//w:br[@w:type='page']", namespace) is not None:
+                break
+        cover_text = " ".join(cover_fragments)
+
+        for required in (
+            "Owner: Haptique Electronics Pvt. Ltd.",
+            "Technical reviewer: Not yet assigned",
+            "Issued: 25 August 2026",
+            "Evidence cutoff: 25 August 2026",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, cover_text)
+
     def test_tables_have_repeating_header_rows(self):
         self.assertGreaterEqual(len(self.document.tables), 4)
         for table in self.document.tables:
@@ -211,20 +240,39 @@ class DocxArtifactTests(unittest.TestCase):
             descriptions,
         )
 
-    def test_evaluation_matrix_has_exact_rows_and_acceptance_rule(self):
+    def test_each_published_evaluation_exposes_the_complete_protocol_contract(self):
         expected_header = [
-            "ID", "Evaluation", "Conditions and comparator", "Primary outputs", "Acceptance rule",
+            "Evaluation", "Controlled setup", "Measurement and decision record",
         ]
         matrix = next(
             table for table in self.document.tables
             if [cell.text for cell in table.rows[0].cells] == expected_header
         )
         self.assertEqual(len(matrix.rows), 8)
-        self.assertEqual([row.cells[0].text for row in matrix.rows[1:]], [f"PE-{i:02d}" for i in range(1, 8)])
         self.assertEqual(
-            {row.cells[4].text for row in matrix.rows[1:]},
-            {"Pre-registered before testing"},
+            [row.cells[0].text.splitlines()[0] for row in matrix.rows[1:]],
+            [f"PE-{i:02d}" for i in range(1, 8)],
         )
+        required_labels = (
+            "Hardware revision:",
+            "Firmware revision:",
+            "Conditions:",
+            "Comparator / ground truth:",
+            "Sample interval:",
+            "Repeated trials:",
+            "Primary outcomes:",
+            "Secondary outcomes:",
+            "Acceptance criterion:",
+            "Exclusions / missing data:",
+            "Uncertainty:",
+            "Retained artifact:",
+        )
+        for row in matrix.rows[1:]:
+            evaluation_id = row.cells[0].text.splitlines()[0]
+            published_record = "\n".join(cell.text for cell in row.cells)
+            for label in required_labels:
+                with self.subTest(evaluation_id=evaluation_id, label=label):
+                    self.assertIn(label, published_record)
 
 
 class DocxBuilderTests(unittest.TestCase):
@@ -400,6 +448,31 @@ class PdfArtifactTests(unittest.TestCase):
             "Revision history", "CB-01", "HT-01", "PE-07",
         ):
             self.assertIn(marker, self.text)
+
+    def test_pdf_cover_and_protocol_appendix_publish_required_controls(self):
+        with pdfplumber.open(PDF_PATH) as pdf:
+            cover_text = pdf.pages[0].extract_text() or ""
+        for required in (
+            "Owner: Haptique Electronics Pvt. Ltd.",
+            "Technical reviewer: Not yet assigned",
+            "Issued: 25 August 2026",
+            "Evidence cutoff: 25 August 2026",
+        ):
+            with self.subTest(cover=required):
+                self.assertIn(required, cover_text)
+
+        for required in (
+            "Hardware revision:",
+            "Firmware revision:",
+            "Sample interval:",
+            "Repeated trials:",
+            "Secondary outcomes:",
+            "Exclusions / missing data:",
+            "Uncertainty:",
+            "Retained artifact:",
+        ):
+            with self.subTest(protocol_field=required):
+                self.assertIn(required, self.text)
 
     def test_table_of_contents_has_page_numbers(self):
         self.assertRegex(
