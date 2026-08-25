@@ -16,7 +16,7 @@ from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK, WD_TAB_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Mm, Pt, RGBColor, Twips
@@ -40,6 +40,8 @@ from paper.root_technical_paper import (  # noqa: E402
 
 
 TOKENS = {
+    "base_preset": "compact_reference_guide",
+    "cover_structure": "editorial_cover",
     "page_mm": (210, 297),
     "margins_mm": (20, 20, 20, 20),
     "header_footer_mm": 10,
@@ -57,11 +59,110 @@ TOKENS = {
     "coral": "D85F48",
     "line": "D7D4CD",
     "light_fill": "F2F1ED",
+    "named_overrides": {
+        "a4_engineering_page": {
+            "base_page": "US Letter",
+            "resolved_page_mm": (210, 297),
+            "resolved_margins_mm": (20, 20, 20, 20),
+        },
+        "engineering_typeface": {
+            "base_font": "Calibri",
+            "resolved_font": "Arial",
+        },
+        "compact_body_leading": {
+            "base_size_pt": 11,
+            "resolved_size_pt": 10,
+            "base_after_pt": 6,
+            "resolved_after_pt": 5,
+            "base_line_spacing": 1.25,
+            "resolved_line_spacing": 1.18,
+        },
+        "engineering_h1_spacing": {
+            "base_before_after_pt": (18, 10),
+            "resolved_before_after_pt": (18, 8),
+        },
+        "engineering_h2_spacing": {
+            "base_before_after_pt": (14, 7),
+            "resolved_before_after_pt": (14, 6),
+        },
+        "compact_h3_scale": {
+            "base_pt": 12,
+            "resolved_pt": 11.5,
+        },
+        "a4_table_geometry": {
+            "base_width_dxa": 9360,
+            "resolved_width_dxa": 9638,
+            "base_header_fill": "E8EEF5",
+            "resolved_header_fill": "F2F1ED",
+            "preserved_indent_dxa": 120,
+            "preserved_cell_margins_dxa": {
+                "top": 80,
+                "bottom": 80,
+                "start": 120,
+                "end": 120,
+            },
+        },
+        "compact_list_leading": {
+            "base_text_indent_dxa": 540,
+            "resolved_text_indent_dxa": 540,
+            "base_hanging_dxa": 271,
+            "resolved_hanging_dxa": 270,
+            "base_after_pt": 4,
+            "resolved_after_pt": 4,
+            "base_line_spacing": 1.25,
+            "resolved_line_spacing": 1.18,
+        },
+        "restrained_editorial_cover": {
+            "alignment": "left",
+            "full_bleed_image": False,
+            "top_spacer_pt": 78,
+        },
+    },
+    "styles": {
+        "normal": {"before_pt": 0},
+        "title": {"before_pt": 0, "after_pt": 10, "line_spacing": 1.0},
+        "subtitle": {"pt": 13, "before_pt": 0, "after_pt": 18, "line_spacing": 1.1},
+        "heading_1": {"before_pt": 18, "after_pt": 8, "line_spacing": 1.05},
+        "heading_2": {"before_pt": 14, "after_pt": 6, "line_spacing": 1.05},
+        "heading_3": {"before_pt": 10, "after_pt": 5, "line_spacing": 1.05},
+        "caption": {"pt": 8.5, "before_pt": 6, "after_pt": 4, "line_spacing": 1.0},
+        "cover_kicker": {"pt": 9, "before_pt": 0, "after_pt": 12},
+        "lead": {"pt": 10.5, "before_pt": 0, "after_pt": 7},
+        "table_text": {"pt": 8.1, "before_pt": 0, "after_pt": 1.5, "line_spacing": 1.05},
+        "contents_entry": {"pt": 9.5, "before_pt": 0, "after_pt": 3, "line_spacing": 1.05},
+    },
+    "header_footer": {"font_pt": 8, "paragraph_before_pt": 0, "paragraph_after_pt": 0},
+    "tables": {
+        "indent_dxa": 120,
+        "cell_margins_dxa": {"top": 80, "bottom": 80, "start": 120, "end": 120},
+        "border_size_eighth_pt": 4,
+        "border_space_pt": 0,
+        "after_paragraph_pt": 2,
+    },
+    "lists": {
+        "tab_position_dxa": 540,
+        "left_indent_dxa": 540,
+        "hanging_dxa": 270,
+        "after_pt": 4,
+    },
+    "contents": {"right_tab_mm": 170},
+    "cover": {
+        "top_spacer_after_pt": 78,
+        "statement_before_pt": 18,
+        "statement_after_pt": 56,
+        "statement_pt": 11,
+        "metadata_before_pt": 0,
+        "metadata_after_pt": 4,
+        "metadata_pt": 10,
+        "detail_before_pt": 0,
+        "detail_after_pt": 3,
+        "detail_pt": 9,
+        "owner_before_pt": 0,
+        "owner_pt": 9,
+    },
 }
 
 OUTPUT_PATH = ROOT / "output" / "docx" / "ROOT-Technical-Concept-Paper-D0.1.docx"
-TABLE_INDENT_DXA = 120
-CELL_MARGINS_DXA = {"top": 80, "bottom": 80, "start": 120, "end": 120}
 
 DISPLAY_HEADINGS = {
     "abstract": "Abstract",
@@ -150,19 +251,20 @@ def configure_styles(document: Document) -> None:
     """Apply the A4 engineering-report style-sheet overrides."""
 
     styles = document.styles
+    style_tokens = TOKENS["styles"]
 
     normal = styles["Normal"]
     _set_style_font(normal, TOKENS["body_pt"], TOKENS["ink"])
-    normal.paragraph_format.space_before = Pt(0)
+    normal.paragraph_format.space_before = Pt(style_tokens["normal"]["before_pt"])
     normal.paragraph_format.space_after = Pt(TOKENS["body_after_pt"])
     normal.paragraph_format.line_spacing = TOKENS["body_line_spacing"]
     normal.paragraph_format.widow_control = True
 
     title = styles["Title"]
     _set_style_font(title, TOKENS["title_pt"], TOKENS["ink"], bold=True)
-    title.paragraph_format.space_before = Pt(0)
-    title.paragraph_format.space_after = Pt(10)
-    title.paragraph_format.line_spacing = 1.0
+    title.paragraph_format.space_before = Pt(style_tokens["title"]["before_pt"])
+    title.paragraph_format.space_after = Pt(style_tokens["title"]["after_pt"])
+    title.paragraph_format.line_spacing = style_tokens["title"]["line_spacing"]
     title.paragraph_format.keep_with_next = True
     title_p_pr = title._element.get_or_add_pPr()
     title_border = title_p_pr.find(qn("w:pBdr"))
@@ -170,23 +272,23 @@ def configure_styles(document: Document) -> None:
         title_p_pr.remove(title_border)
 
     subtitle = styles["Subtitle"]
-    _set_style_font(subtitle, 13, TOKENS["muted"])
-    subtitle.paragraph_format.space_before = Pt(0)
-    subtitle.paragraph_format.space_after = Pt(18)
-    subtitle.paragraph_format.line_spacing = 1.1
+    _set_style_font(subtitle, style_tokens["subtitle"]["pt"], TOKENS["muted"])
+    subtitle.paragraph_format.space_before = Pt(style_tokens["subtitle"]["before_pt"])
+    subtitle.paragraph_format.space_after = Pt(style_tokens["subtitle"]["after_pt"])
+    subtitle.paragraph_format.line_spacing = style_tokens["subtitle"]["line_spacing"]
     subtitle.paragraph_format.keep_with_next = True
 
     heading_tokens = (
-        ("Heading 1", TOKENS["h1_pt"], TOKENS["coral"], 18, 8),
-        ("Heading 2", TOKENS["h2_pt"], TOKENS["ink"], 14, 6),
-        ("Heading 3", TOKENS["h3_pt"], TOKENS["muted"], 10, 5),
+        ("Heading 1", style_tokens["heading_1"], TOKENS["h1_pt"], TOKENS["coral"]),
+        ("Heading 2", style_tokens["heading_2"], TOKENS["h2_pt"], TOKENS["ink"]),
+        ("Heading 3", style_tokens["heading_3"], TOKENS["h3_pt"], TOKENS["muted"]),
     )
-    for style_name, size, color, before, after in heading_tokens:
+    for style_name, resolved, size, color in heading_tokens:
         style = styles[style_name]
         _set_style_font(style, size, color, bold=True)
-        style.paragraph_format.space_before = Pt(before)
-        style.paragraph_format.space_after = Pt(after)
-        style.paragraph_format.line_spacing = 1.05
+        style.paragraph_format.space_before = Pt(resolved["before_pt"])
+        style.paragraph_format.space_after = Pt(resolved["after_pt"])
+        style.paragraph_format.line_spacing = resolved["line_spacing"]
         style.paragraph_format.keep_with_next = True
         style.paragraph_format.widow_control = True
         p_pr = style._element.get_or_add_pPr()
@@ -195,45 +297,45 @@ def configure_styles(document: Document) -> None:
             p_pr.remove(contextual_spacing)
 
     caption = styles["Caption"]
-    _set_style_font(caption, 8.5, TOKENS["muted"], bold=True)
-    caption.paragraph_format.space_before = Pt(6)
-    caption.paragraph_format.space_after = Pt(4)
-    caption.paragraph_format.line_spacing = 1.0
+    _set_style_font(caption, style_tokens["caption"]["pt"], TOKENS["muted"], bold=True)
+    caption.paragraph_format.space_before = Pt(style_tokens["caption"]["before_pt"])
+    caption.paragraph_format.space_after = Pt(style_tokens["caption"]["after_pt"])
+    caption.paragraph_format.line_spacing = style_tokens["caption"]["line_spacing"]
     caption.paragraph_format.keep_with_next = True
 
     if "Cover Kicker" not in styles:
         styles.add_style("Cover Kicker", WD_STYLE_TYPE.PARAGRAPH)
     kicker = styles["Cover Kicker"]
-    _set_style_font(kicker, 9, TOKENS["coral"], bold=True)
-    kicker.paragraph_format.space_before = Pt(0)
-    kicker.paragraph_format.space_after = Pt(12)
+    _set_style_font(kicker, style_tokens["cover_kicker"]["pt"], TOKENS["coral"], bold=True)
+    kicker.paragraph_format.space_before = Pt(style_tokens["cover_kicker"]["before_pt"])
+    kicker.paragraph_format.space_after = Pt(style_tokens["cover_kicker"]["after_pt"])
     kicker.paragraph_format.keep_with_next = True
 
     if "Lead" not in styles:
         styles.add_style("Lead", WD_STYLE_TYPE.PARAGRAPH)
     lead = styles["Lead"]
-    _set_style_font(lead, 10.5, TOKENS["muted"], italic=True)
-    lead.paragraph_format.space_before = Pt(0)
-    lead.paragraph_format.space_after = Pt(7)
+    _set_style_font(lead, style_tokens["lead"]["pt"], TOKENS["muted"], italic=True)
+    lead.paragraph_format.space_before = Pt(style_tokens["lead"]["before_pt"])
+    lead.paragraph_format.space_after = Pt(style_tokens["lead"]["after_pt"])
     lead.paragraph_format.line_spacing = TOKENS["body_line_spacing"]
     lead.paragraph_format.keep_with_next = True
 
     if "Table Text" not in styles:
         styles.add_style("Table Text", WD_STYLE_TYPE.PARAGRAPH)
     table_text = styles["Table Text"]
-    _set_style_font(table_text, 8.1, TOKENS["ink"])
-    table_text.paragraph_format.space_before = Pt(0)
-    table_text.paragraph_format.space_after = Pt(1.5)
-    table_text.paragraph_format.line_spacing = 1.05
+    _set_style_font(table_text, style_tokens["table_text"]["pt"], TOKENS["ink"])
+    table_text.paragraph_format.space_before = Pt(style_tokens["table_text"]["before_pt"])
+    table_text.paragraph_format.space_after = Pt(style_tokens["table_text"]["after_pt"])
+    table_text.paragraph_format.line_spacing = style_tokens["table_text"]["line_spacing"]
     table_text.paragraph_format.widow_control = True
 
     if "Contents Entry" not in styles:
         styles.add_style("Contents Entry", WD_STYLE_TYPE.PARAGRAPH)
     toc = styles["Contents Entry"]
-    _set_style_font(toc, 9.5, TOKENS["ink"])
-    toc.paragraph_format.space_before = Pt(0)
-    toc.paragraph_format.space_after = Pt(3)
-    toc.paragraph_format.line_spacing = 1.05
+    _set_style_font(toc, style_tokens["contents_entry"]["pt"], TOKENS["ink"])
+    toc.paragraph_format.space_before = Pt(style_tokens["contents_entry"]["before_pt"])
+    toc.paragraph_format.space_after = Pt(style_tokens["contents_entry"]["after_pt"])
+    toc.paragraph_format.line_spacing = style_tokens["contents_entry"]["line_spacing"]
 
 
 def add_field(paragraph, field_code: str, placeholder: str = "1") -> None:
@@ -250,37 +352,37 @@ def add_field(paragraph, field_code: str, placeholder: str = "1") -> None:
     end.set(qn("w:fldCharType"), "end")
 
     run = paragraph.add_run()
-    set_run_font(run, size=8, color=TOKENS["muted"])
+    set_run_font(run, size=TOKENS["header_footer"]["font_pt"], color=TOKENS["muted"])
     run._r.append(begin)
     run._r.append(instruction)
     run._r.append(separate)
     cached = paragraph.add_run(placeholder)
-    set_run_font(cached, size=8, color=TOKENS["muted"])
+    set_run_font(cached, size=TOKENS["header_footer"]["font_pt"], color=TOKENS["muted"])
     end_run = paragraph.add_run()
-    set_run_font(end_run, size=8, color=TOKENS["muted"])
+    set_run_font(end_run, size=TOKENS["header_footer"]["font_pt"], color=TOKENS["muted"])
     end_run._r.append(end)
 
 
 def _populate_header(header) -> None:
     header_p = header.paragraphs[0]
     header_p.clear()
-    header_p.paragraph_format.space_after = Pt(0)
+    header_p.paragraph_format.space_after = Pt(TOKENS["header_footer"]["paragraph_after_pt"])
     run = header_p.add_run(f"ROOT | Room-level AC comfort | {DOCUMENT['revision']}")
-    set_run_font(run, size=8, color=TOKENS["muted"], bold=True)
+    set_run_font(run, size=TOKENS["header_footer"]["font_pt"], color=TOKENS["muted"], bold=True)
 
 
 def _populate_footer(footer) -> None:
     footer_p = footer.paragraphs[0]
     footer_p.clear()
     footer_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    footer_p.paragraph_format.space_before = Pt(0)
+    footer_p.paragraph_format.space_before = Pt(TOKENS["header_footer"]["paragraph_before_pt"])
     prefix = footer_p.add_run(
         f"{DOCUMENT['document_id']}  |  {DOCUMENT['publication_status']}  |  Page "
     )
-    set_run_font(prefix, size=8, color=TOKENS["muted"])
+    set_run_font(prefix, size=TOKENS["header_footer"]["font_pt"], color=TOKENS["muted"])
     add_field(footer_p, "PAGE")
     tail = footer_p.add_run(" of ")
-    set_run_font(tail, size=8, color=TOKENS["muted"])
+    set_run_font(tail, size=TOKENS["header_footer"]["font_pt"], color=TOKENS["muted"])
     add_field(footer_p, "NUMPAGES")
 
 
@@ -310,7 +412,7 @@ def configure_section(section) -> None:
 def set_cell_margins(cell, **margins_dxa: int) -> None:
     """Set explicit Word cell margins."""
 
-    resolved = dict(CELL_MARGINS_DXA)
+    resolved = dict(TOKENS["tables"]["cell_margins_dxa"])
     resolved.update({key: int(value) for key, value in margins_dxa.items()})
     tc_pr = cell._tc.get_or_add_tcPr()
     tc_mar = _ensure_child(tc_pr, "w:tcMar")
@@ -341,7 +443,7 @@ def set_fixed_table_geometry(table, column_widths_dxa: Sequence[int]) -> None:
     _set_dxa_width(tbl_pr, "w:tblW", sum(widths))
     indent = _ensure_child(tbl_pr, "w:tblInd")
     indent.set(qn("w:type"), "dxa")
-    indent.set(qn("w:w"), str(TABLE_INDENT_DXA))
+    indent.set(qn("w:w"), str(TOKENS["tables"]["indent_dxa"]))
     layout = _ensure_child(tbl_pr, "w:tblLayout")
     layout.set(qn("w:type"), "fixed")
 
@@ -349,8 +451,8 @@ def set_fixed_table_geometry(table, column_widths_dxa: Sequence[int]) -> None:
     for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
         node = _ensure_child(borders, f"w:{edge}")
         node.set(qn("w:val"), "single")
-        node.set(qn("w:sz"), "4")
-        node.set(qn("w:space"), "0")
+        node.set(qn("w:sz"), str(TOKENS["tables"]["border_size_eighth_pt"]))
+        node.set(qn("w:space"), str(TOKENS["tables"]["border_space_pt"]))
         node.set(qn("w:color"), TOKENS["line"])
 
     grid = table._tbl.tblGrid
@@ -410,7 +512,7 @@ def _format_table(table) -> None:
                 for run in paragraph.runs:
                     set_run_font(
                         run,
-                        size=8.1,
+                        size=TOKENS["styles"]["table_text"]["pt"],
                         color=TOKENS["ink"],
                         bold=row_index == 0,
                     )
@@ -435,14 +537,15 @@ def _add_table(
     set_fixed_table_geometry(table, _allocate_widths(weights))
     _format_table(table)
     after = document.add_paragraph()
-    after.paragraph_format.space_after = Pt(2)
+    after.paragraph_format.space_after = Pt(TOKENS["tables"]["after_paragraph_pt"])
 
 
 def _add_heading(document: Document, text: str, level: int = 1) -> None:
     paragraph = document.add_paragraph(text, style=f"Heading {level}")
+    resolved = TOKENS["styles"][f"heading_{level}"]
     paragraph.paragraph_format.keep_with_next = True
-    paragraph.paragraph_format.space_before = Pt({1: 18, 2: 14, 3: 10}[level])
-    paragraph.paragraph_format.space_after = Pt({1: 8, 2: 6, 3: 5}[level])
+    paragraph.paragraph_format.space_before = Pt(resolved["before_pt"])
+    paragraph.paragraph_format.space_after = Pt(resolved["after_pt"])
 
 
 def _add_section_copy(document: Document, section: dict, display_heading: str) -> None:
@@ -491,12 +594,12 @@ def _create_numbering(document: Document) -> dict[str, int]:
         tabs = OxmlElement("w:tabs")
         tab = OxmlElement("w:tab")
         tab.set(qn("w:val"), "num")
-        tab.set(qn("w:pos"), "540")
+        tab.set(qn("w:pos"), str(TOKENS["lists"]["tab_position_dxa"]))
         tabs.append(tab)
         p_pr.append(tabs)
         ind = OxmlElement("w:ind")
-        ind.set(qn("w:left"), "540")
-        ind.set(qn("w:hanging"), "270")
+        ind.set(qn("w:left"), str(TOKENS["lists"]["left_indent_dxa"]))
+        ind.set(qn("w:hanging"), str(TOKENS["lists"]["hanging_dxa"]))
         p_pr.append(ind)
         level.append(p_pr)
         r_pr = OxmlElement("w:rPr")
@@ -522,7 +625,7 @@ def _create_numbering(document: Document) -> dict[str, int]:
 
 def _add_list_item(document: Document, text: str, num_id: int) -> None:
     paragraph = document.add_paragraph()
-    paragraph.paragraph_format.space_after = Pt(4)
+    paragraph.paragraph_format.space_after = Pt(TOKENS["lists"]["after_pt"])
     paragraph.paragraph_format.line_spacing = TOKENS["body_line_spacing"]
     p_pr = paragraph._p.get_or_add_pPr()
     num_pr = _ensure_child(p_pr, "w:numPr")
@@ -538,7 +641,7 @@ def add_cover(document: Document) -> None:
     """Add a restrained, left-aligned editorial cover."""
 
     spacer = document.add_paragraph()
-    spacer.paragraph_format.space_after = Pt(78)
+    spacer.paragraph_format.space_after = Pt(TOKENS["cover"]["top_spacer_after_pt"])
     kicker = document.add_paragraph("TECHNICAL CONCEPT PAPER", style="Cover Kicker")
     kicker.alignment = WD_ALIGN_PARAGRAPH.LEFT
     title = document.add_paragraph(DOCUMENT["title"], style="Title")
@@ -547,29 +650,29 @@ def add_cover(document: Document) -> None:
     subtitle.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
     statement = document.add_paragraph()
-    statement.paragraph_format.space_before = Pt(18)
-    statement.paragraph_format.space_after = Pt(56)
+    statement.paragraph_format.space_before = Pt(TOKENS["cover"]["statement_before_pt"])
+    statement.paragraph_format.space_after = Pt(TOKENS["cover"]["statement_after_pt"])
     run = statement.add_run(
         "A developer-preview architecture and evaluation plan for bounded local room-comfort control."
     )
-    set_run_font(run, size=11, color=TOKENS["ink"])
+    set_run_font(run, size=TOKENS["cover"]["statement_pt"], color=TOKENS["ink"])
 
     metadata = document.add_paragraph()
-    metadata.paragraph_format.space_before = Pt(0)
-    metadata.paragraph_format.space_after = Pt(4)
+    metadata.paragraph_format.space_before = Pt(TOKENS["cover"]["metadata_before_pt"])
+    metadata.paragraph_format.space_after = Pt(TOKENS["cover"]["metadata_after_pt"])
     first = metadata.add_run(f"{DOCUMENT['document_id']}  |  {DOCUMENT['revision']}")
-    set_run_font(first, size=10, color=TOKENS["ink"], bold=True)
+    set_run_font(first, size=TOKENS["cover"]["metadata_pt"], color=TOKENS["ink"], bold=True)
     detail = document.add_paragraph()
-    detail.paragraph_format.space_before = Pt(0)
-    detail.paragraph_format.space_after = Pt(3)
+    detail.paragraph_format.space_before = Pt(TOKENS["cover"]["detail_before_pt"])
+    detail.paragraph_format.space_after = Pt(TOKENS["cover"]["detail_after_pt"])
     detail_run = detail.add_run(
         f"{DOCUMENT['publication_status']}  |  Issued {DOCUMENT['issue_date']}"
     )
-    set_run_font(detail_run, size=9, color=TOKENS["muted"])
+    set_run_font(detail_run, size=TOKENS["cover"]["detail_pt"], color=TOKENS["muted"])
     owner = document.add_paragraph()
-    owner.paragraph_format.space_before = Pt(0)
+    owner.paragraph_format.space_before = Pt(TOKENS["cover"]["owner_before_pt"])
     owner_run = owner.add_run(DOCUMENT["owner"])
-    set_run_font(owner_run, size=9, color=TOKENS["muted"])
+    set_run_font(owner_run, size=TOKENS["cover"]["owner_pt"], color=TOKENS["muted"])
     document.add_page_break()
 
 
@@ -583,7 +686,10 @@ def _toc_page(toc_page_map: dict[str, int] | None, key: str, heading: str) -> in
     return None
 
 
-def add_front_matter(document: Document) -> None:
+def add_front_matter(
+    document: Document,
+    toc_page_map: dict[str, int] | None = None,
+) -> None:
     """Add document control, contents, and nomenclature front matter."""
 
     _add_heading(document, "Document control")
@@ -620,10 +726,13 @@ def add_front_matter(document: Document) -> None:
     ):
         heading = DISPLAY_HEADINGS[key]
         paragraph = document.add_paragraph(style="Contents Entry")
-        paragraph.paragraph_format.tab_stops.add_tab_stop(Mm(170), WD_TAB_ALIGNMENT.RIGHT)
+        paragraph.paragraph_format.tab_stops.add_tab_stop(
+            Mm(TOKENS["contents"]["right_tab_mm"]),
+            WD_TAB_ALIGNMENT.RIGHT,
+        )
         paragraph.add_run(heading)
         if key == "appendix-a" or heading[:1].isdigit():
-            mapped_page = _toc_page(getattr(document, "_root_toc_page_map", None), key, heading)
+            mapped_page = _toc_page(toc_page_map, key, heading)
             if mapped_page is not None:
                 paragraph.add_run(f"\t{mapped_page}")
 
@@ -884,11 +993,10 @@ def build_docx(
     for section in document.sections:
         configure_section(section)
     _set_document_properties(document)
-    document._root_toc_page_map = toc_page_map
     numbering = _create_numbering(document)
 
     add_cover(document)
-    add_front_matter(document)
+    add_front_matter(document, toc_page_map)
     add_technical_body(document, numbering)
     add_back_matter(document)
 

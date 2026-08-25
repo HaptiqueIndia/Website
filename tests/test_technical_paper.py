@@ -1,14 +1,15 @@
 import importlib.util
 import pathlib
+import tempfile
 import unittest
+import zipfile
 
 from docx import Document
-from docx.enum.section import WD_SECTION
-from docx.shared import Mm
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "paper" / "root_technical_paper.py"
+BUILDER_PATH = ROOT / "scripts" / "build_technical_paper.py"
 DOCX_PATH = ROOT / "output" / "docx" / "ROOT-Technical-Concept-Paper-D0.1.docx"
 APPROVED_FORBIDDEN_COPY = (
     "acceleration award", "affiliated with panasonic", "patent pending",
@@ -147,6 +148,80 @@ class DocxArtifactTests(unittest.TestCase):
         for table in self.document.tables:
             first_row_xml = table.rows[0]._tr.xml
             self.assertIn("tblHeader", first_row_xml)
+
+
+class DocxBuilderTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location("build_technical_paper", BUILDER_PATH)
+        cls.builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.builder)
+
+    def test_front_matter_accepts_explicit_toc_page_map(self):
+        document = Document()
+        self.builder.configure_styles(document)
+        for section in document.sections:
+            self.builder.configure_section(section)
+
+        self.builder.add_front_matter(
+            document,
+            {"room-level-problem": 42, "appendix-a": 99},
+        )
+
+        contents = "\n".join(paragraph.text for paragraph in document.paragraphs)
+        self.assertIn("1. The room-level problem\t42", contents)
+        self.assertIn("Appendix A. Controlled disclosures\t99", contents)
+
+    def test_build_docx_creates_valid_a4_artifact(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            output_path = pathlib.Path(temporary_directory) / "built.docx"
+            result = self.builder.build_docx(
+                output_path,
+                {"room-level-problem": 4, "appendix-a": 11},
+            )
+
+            self.assertEqual(result, output_path)
+            self.assertTrue(output_path.is_file())
+            document = Document(output_path)
+            section = document.sections[0]
+            self.assertAlmostEqual(section.page_width.mm, 210, delta=0.2)
+            self.assertAlmostEqual(section.page_height.mm, 297, delta=0.2)
+            for margin in (
+                section.top_margin,
+                section.right_margin,
+                section.bottom_margin,
+                section.left_margin,
+            ):
+                self.assertAlmostEqual(margin.mm, 20, delta=0.2)
+
+            text = "\n".join(paragraph.text for paragraph in document.paragraphs)
+            for required in (
+                "ROOT: A local architecture for room-level AC comfort",
+                "ROOT-TCP-001",
+                "1. The room-level problem\t4",
+                "Appendix A. Controlled disclosures\t11",
+                "Implemented prototype behavior",
+                "Revision history",
+            ):
+                self.assertIn(required, text)
+            self.assertGreaterEqual(len(document.tables), 7)
+            for table in document.tables:
+                self.assertIn("tblHeader", table.rows[0]._tr.xml)
+
+            with zipfile.ZipFile(output_path) as archive:
+                footer_xml = archive.read("word/footer1.xml").decode("utf-8")
+                settings_xml = archive.read("word/settings.xml").decode("utf-8")
+            self.assertIn("PAGE", footer_xml)
+            self.assertIn("NUMPAGES", footer_xml)
+            self.assertIn("updateFields", settings_xml)
+
+    def test_build_docx_is_byte_deterministic(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = pathlib.Path(temporary_directory)
+            first = self.builder.build_docx(directory / "first.docx")
+            second = self.builder.build_docx(directory / "second.docx")
+
+            self.assertEqual(first.read_bytes(), second.read_bytes())
 
 
 if __name__ == "__main__":
