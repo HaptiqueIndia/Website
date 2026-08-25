@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [home, sitemap, about, privacy, comingSoon, siteGate, product] = await Promise.all([
+const [home, sitemap, about, privacy, comingSoon, siteGate, product, style] = await Promise.all([
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../sitemap.html', import.meta.url), 'utf8'),
   readFile(new URL('../about.html', import.meta.url), 'utf8'),
   readFile(new URL('../privacy-policy.html', import.meta.url), 'utf8'),
   readFile(new URL('../coming-soon.html', import.meta.url), 'utf8'),
   readFile(new URL('../site-gate.js', import.meta.url), 'utf8'),
-  readFile(new URL('../product-details.html', import.meta.url), 'utf8')
+  readFile(new URL('../product-details.html', import.meta.url), 'utf8'),
+  readFile(new URL('../style.css', import.meta.url), 'utf8')
 ]);
 
 const primaryNav = home.match(/<ul class="nav-links">([\s\S]*?)<\/ul>/)?.[1] ?? '';
@@ -44,6 +45,7 @@ assert.match(privacy, /mailto:info@get-root\.in/i, 'privacy page should provide 
 assert.match(comingSoon, /Coming soon/i, 'coming-soon page should show the launch state');
 assert.match(comingSoon, /Indoor climate, rethought/i, 'coming-soon page should communicate the climate promise');
 assert.doesNotMatch(comingSoon, /Discuss on Discord|Haptique Electronics Pvt\. Ltd\.|Panasonic Ignition/i, 'coming-soon page should remain a minimal public gate');
+assert.match(style, /\.ac-coming-soon-page\s*\{[^}]*overflow-x:hidden;[^}]*overflow-y:auto;/i, 'coming-soon page should allow vertical scrolling on short mobile viewports');
 assert.match(siteGate, /localhost|127\.0\.0\.1/i, 'site gate should allow local developer review');
 assert.match(siteGate, /coming-soon\.html/i, 'site gate should redirect public traffic to coming-soon');
 for (const page of [home, sitemap, about, privacy]) {
