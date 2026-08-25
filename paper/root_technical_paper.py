@@ -210,6 +210,8 @@ CLAIMS = tuple(
         "owner": "Haptique Electronics Pvt. Ltd.",
         "review_date": "25 August 2026",
         "superseded_wording": None,
+        "hardware_revision": "Not applicable" if claim["id"] == "CB-01" else "Target revision not yet assigned",
+        "firmware_revision": "Not applicable" if claim["id"] == "CB-01" else "Target revision not yet assigned",
     }
     for claim in CLAIMS
 )
@@ -293,6 +295,8 @@ def _planned_protocol(identifier, claim_id, title, conditions, comparator_ground
         "title": title,
         "conditions": conditions,
         "comparator_ground_truth": comparator_ground_truth,
+        "hardware_revision": "Target revision not yet assigned",
+        "firmware_revision": "Target revision not yet assigned",
         "sample_interval": "Defined before testing",
         "repeated_trials": "Defined before testing",
         "primary_outcomes": primary_outcomes,

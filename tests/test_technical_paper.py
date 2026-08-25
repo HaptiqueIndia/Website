@@ -5,6 +5,11 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "paper" / "root_technical_paper.py"
+APPROVED_FORBIDDEN_COPY = (
+    "acceleration award", "affiliated with panasonic", "patent pending",
+    "breathing sense", "zero outages", "perfect coverage",
+    "universal compatibility", "fully-tested", "100% local",
+)
 
 
 class ContentModelTests(unittest.TestCase):
@@ -39,6 +44,7 @@ class ContentModelTests(unittest.TestCase):
         required = {
             "id", "status", "scope", "revision", "evidence_id", "evidence_date",
             "wording", "owner", "review_date", "superseded_wording",
+            "hardware_revision", "firmware_revision",
         }
         self.assertTrue({"CB-01", "HT-01", "HT-02", "PE-01", "PE-07"}.issubset(
             {claim["id"] for claim in paper.CLAIMS}
@@ -46,6 +52,10 @@ class ContentModelTests(unittest.TestCase):
         for claim in paper.CLAIMS:
             self.assertTrue(required.issubset(claim))
         self.assertNotIn("Implemented prototype behavior", {claim["status"] for claim in paper.CLAIMS})
+        for claim in paper.CLAIMS:
+            expected_revision = "Not applicable" if claim["id"] == "CB-01" else "Target revision not yet assigned"
+            self.assertEqual(claim["hardware_revision"], expected_revision)
+            self.assertEqual(claim["firmware_revision"], expected_revision)
 
     def test_controlled_disclosures_have_approval_provenance(self):
         paper = self.load_module()
@@ -67,11 +77,13 @@ class ContentModelTests(unittest.TestCase):
             "conditions", "comparator_ground_truth", "sample_interval", "repeated_trials",
             "primary_outcomes", "secondary_outcomes", "acceptance_criterion",
             "exclusions_missing_data", "uncertainty", "retained_evidence_artifact",
-            "reporting_requirements",
+            "reporting_requirements", "hardware_revision", "firmware_revision",
         }
         for protocol in paper.PROTOCOLS:
             self.assertTrue(required.issubset(protocol))
             self.assertEqual(protocol["acceptance_criterion"], "Defined before testing")
+            self.assertEqual(protocol["hardware_revision"], "Target revision not yet assigned")
+            self.assertEqual(protocol["firmware_revision"], "Target revision not yet assigned")
 
     def test_references_include_required_authorship_or_organization(self):
         paper = self.load_module()
@@ -84,6 +96,7 @@ class ContentModelTests(unittest.TestCase):
 
     def test_copy_respects_disclosure_boundary(self):
         paper = self.load_module()
+        self.assertEqual(paper.FORBIDDEN_COPY, APPROVED_FORBIDDEN_COPY)
         def strings(value):
             if isinstance(value, str):
                 return [value]
@@ -94,10 +107,10 @@ class ContentModelTests(unittest.TestCase):
             return []
 
         corpus = "\n".join(strings((
-            paper.DOCUMENT, paper.SECTIONS, paper.CLAIMS, paper.REFERENCES,
+            paper.EVIDENCE_STATUSES, paper.DOCUMENT, paper.SECTIONS, paper.CLAIMS, paper.REFERENCES,
             paper.PROTOCOLS, paper.CONTROLLED_DISCLOSURES, paper.REVISION_HISTORY,
         ))).lower()
-        for phrase in paper.FORBIDDEN_COPY:
+        for phrase in APPROVED_FORBIDDEN_COPY:
             self.assertNotIn(phrase.lower(), corpus)
 
 
