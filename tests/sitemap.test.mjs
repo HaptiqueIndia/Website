@@ -23,12 +23,18 @@ assert.match(home, /Discuss on Discord/i, 'homepage footer should show the Disco
 assert.doesNotMatch(home, /Email Heptic Electronics|Email Haptique Electronics/i, 'homepage footer should not show a direct email link');
 assert.match(home, /href="privacy-policy\.html"[^>]*>Privacy policy<\/a>/i, 'homepage footer should link to the privacy policy');
 
+const discordInvite = 'https://discord.gg/xvFbX8RA';
+for (const [name, page] of [['homepage', home], ['product page', product], ['about page', about], ['privacy page', privacy], ['sitemap page', sitemap]]) {
+  assert.match(page, new RegExp(`href="${discordInvite.replace(/[.*+?^${}()|[\\]\\]/g, '\\\\$&')}"`, 'i'), `${name} should link to the ROOT Discord server`);
+  assert.doesNotMatch(page, /https:\/\/discord\.com(?:["/]|$)/i, `${name} should not link to generic Discord`);
+}
+
 for (const phrase of ['Haptique Electronics Pvt. Ltd.', 'Panasonic Ignition', 'Patent pending']) {
   assert.match(sitemap, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), `sitemap should mention ${phrase}`);
 }
 assert.match(about, /Acceleration Award at Panasonic Ignition, 2025/i, 'about page should mention the award');
 
-assert.match(sitemap, /href="https:\/\/discord\.com"/i, 'sitemap should provide a Discord link');
+assert.match(sitemap, /Discuss on Discord/i, 'sitemap should provide a Discord link');
 assert.match(sitemap, /<form[^>]+id="sitemapContactForm"/i, 'sitemap should contain the contact form');
 assert.match(sitemap, /name="name"[^>]+required/i, 'contact form should require a name');
 assert.match(sitemap, /name="email"[^>]+type="email"[^>]+required/i, 'contact form should require a valid email');
@@ -45,7 +51,9 @@ assert.match(privacy, /mailto:info@get-root\.in/i, 'privacy page should provide 
 assert.match(comingSoon, /Coming soon/i, 'coming-soon page should show the launch state');
 assert.match(comingSoon, /Indoor climate, rethought/i, 'coming-soon page should communicate the climate promise');
 assert.doesNotMatch(comingSoon, /Discuss on Discord|Haptique Electronics Pvt\. Ltd\.|Panasonic Ignition/i, 'coming-soon page should remain a minimal public gate');
+assert.match(comingSoon, /<a class="ac-coming-soon-discord" href="https:\/\/discord\.gg\/xvFbX8RA"[^>]*>\s*<svg[^>]+viewBox="0 0 24 24"[\s\S]*<\/svg>\s*<\/a>/i, 'coming-soon page should show an icon-only Discord invite');
 assert.match(style, /\.ac-coming-soon-page\s*\{[^}]*overflow-x:hidden;[^}]*overflow-y:auto;/i, 'coming-soon page should allow vertical scrolling on short mobile viewports');
+assert.match(style, /\.ac-coming-soon-discord\s*\{[^}]*top:[^;]+;[^}]*right:[^;]+;[^}]*color:var\(--ac-ink\);[^}]*background:transparent;[^}]*border-radius:0;/i, 'coming-soon Discord icon should be black, unboxed, and top-right');
 assert.match(siteGate, /localhost|127\.0\.0\.1/i, 'site gate should allow local developer review');
 assert.match(siteGate, /coming-soon\.html/i, 'site gate should redirect public traffic to coming-soon');
 for (const page of [home, sitemap, about, privacy]) {
