@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROOT | Technical concept paper</title>
+  <meta name="description" content="A developer-preview concept paper describing ROOT's proposed local architecture for room-level split-AC comfort.">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260825-whitepaper">
+</head>
+<body class="ac-whitepaper-page" id="top">
+  <header class="ac-whitepaper-nav">
+    <a class="ac-wordmark" href="#top" aria-label="ROOT concept paper home">ROOT</a>
+    <nav aria-label="Concept paper navigation">
+      <a href="#architecture">Architecture</a>
+      <a href="#evaluation">Evaluation</a>
+      <a href="#limitations">Limits</a>
+      <a href="#references">References</a>
+    </nav>
+    <span>Companion web edition / D0.1</span>
+  </header>
+
+  <main>
+    <section class="ac-whitepaper-hero" id="abstract" aria-labelledby="paper-title">
+      <div class="ac-whitepaper-hero__copy">
+        <p class="ac-whitepaper-kicker">TECHNICAL CONCEPT PAPER / D0.1</p>
+        <h1 id="paper-title">ROOT: A local architecture for room-level AC comfort</h1>
+        <p class="ac-whitepaper-abstract">ROOT is a proposed controller for IR-operated split air conditioners. Its design thesis is to sense conditions closer to an occupied location, make bounded control decisions on the device, and transmit adjustments through the AC's existing infrared interface. The paper limits its scope to an engineering concept: proposed climate and presence inputs, Bluetooth-assisted configuration, infrared learning and transmission, placement effects, on-device decision boundaries, and failure modes that must preserve manual AC control. It distinguishes cited HVAC context from ROOT-specific hypotheses and records the hardware and firmware revisions to which future evidence must apply. Seven planned evaluations define how climate sensing, presence sensing, infrared interoperability, offline control, setup, power behavior, and room-comfort stability are to be tested. Each protocol requires stated conditions, comparators, sampling, repeated trials, outcomes, pre-specified acceptance criteria, missing-data handling, uncertainty, and retained artifacts. This revision reports no measured product-performance result, establishes no compatibility, accuracy, reliability, comfort, or energy claim, and treats every unmeasured behavior as a hypothesis, design target, or planned evaluation.</p>
+      </div>
+
+      <aside class="ac-whitepaper-hero__status" aria-label="Publication status">
+        <span class="ac-whitepaper-status">Companion web edition / D0.1</span>
+        <p><strong>Technical concept paper / Developer preview</strong></p>
+        <p>The canonical review artifact is the versioned technical-paper PDF. Downloads remain disabled during local developer review.</p>
+        <a href="#revision-history">View revision history <span aria-hidden="true">↓</span></a>
+      </aside>
+
+      <dl class="ac-whitepaper-document-grid" aria-label="Document control">
+        <div><dt>Document ID</dt><dd>ROOT-TCP-001</dd></div>
+        <div><dt>Revision</dt><dd>D0.1</dd></div>
+        <div><dt>Publication status</dt><dd>Technical concept paper / Developer preview</dd></div>
+        <div><dt>Web designation</dt><dd>Companion web edition / D0.1</dd></div>
+        <div><dt>Owner / author</dt><dd>Haptique Electronics Pvt. Ltd.</dd></div>
+        <div><dt>Technical reviewer</dt><dd>Not yet assigned</dd></div>
+        <div><dt>Issued date</dt><dd>25 August 2026</dd></div>
+        <div><dt>Last reviewed</dt><dd>25 August 2026</dd></div>
+        <div><dt>Evidence cutoff</dt><dd>25 August 2026</dd></div>
+        <div><dt>Hardware revision</dt><dd>Not yet assigned</dd></div>
+        <div><dt>Firmware revision</dt><dd>Not yet assigned</dd></div>
+      </dl>
+
+      <div class="ac-whitepaper-evidence-key" aria-labelledby="evidence-key-title">
+        <div>
+          <p class="ac-whitepaper-section-index">EVIDENCE KEY</p>
+          <h2 id="evidence-key-title">How to read each claim.</h2>
+        </div>
+        <dl>
+          <div>
+            <dt>Cited background</dt>
+            <dd>Independent context. It does not show that ROOT achieved the cited result.</dd>
+          </div>
+          <div>
+            <dt>Implemented prototype behavior</dt>
+            <dd>Reserved for repeatable observations tied to identified hardware and firmware.</dd>
+          </div>
+          <div>
+            <dt>Hypothesis / design target</dt>
+            <dd>An intended mechanism or requirement that still needs prototype evidence.</dd>
+          </div>
+          <div>
+            <dt>Planned evaluation</dt>
+            <dd>A defined validation activity for which this paper reports no result.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section" id="room-level-problem" aria-labelledby="problem-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">01 / PROBLEM</p>
+        <h2 id="problem-title">The occupied part of a room can differ from the return-air reference.</h2>
+      </div>
+      <div class="ac-whitepaper-section__body">
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--background">Cited background</span>
+          <span>CB-01</span>
+        </div>
+        <p>Split air conditioners typically regulate from a temperature reference near the indoor unit. Airflow, heat loads, room geometry, and occupant location can create non-uniform conditions that a single reference does not fully describe. Recent experimental work has examined non-uniform cooling and the limits of a single thermostat reference in split-AC rooms.<sup><a href="#ref-1" aria-label="Go to reference 1">1</a></sup></p>
+        <p>ROOT's design hypothesis is narrower: a sensor placed near a bed, couch, or desk may provide a more relevant control input for that location. The magnitude and usefulness of any difference remain dependent on the room and must be measured.</p>
+        <dl class="ac-whitepaper-claim-meta">
+          <div><dt>Scope</dt><dd>HVAC background and design motivation</dd></div>
+          <div><dt>Revision</dt><dd>Not applicable</dd></div>
+          <div><dt>Evidence</dt><dd>Reference 1</dd></div>
+          <div><dt>Evidence date</dt><dd>2026</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section ac-whitepaper-section--ink" id="architecture" aria-labelledby="architecture-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">02 / ARCHITECTURE</p>
+        <h2 id="architecture-title">A four-stage loop with a deliberately small control boundary.</h2>
+      </div>
+      <div class="ac-whitepaper-section__body">
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--target">Hypothesis / design target</span>
+          <span>HT-01</span>
+        </div>
+        <ol class="ac-whitepaper-architecture" aria-label="Conceptual four-stage control loop">
+          <li>
+            <span>01</span>
+            <div><h3>Sense</h3><p>Sample temperature, humidity, and a bounded presence signal near the intended occupied location.</p></div>
+          </li>
+          <li>
+            <span>02</span>
+            <div><h3>Interpret</h3><p>Estimate whether the configured control context is active without treating presence as health or vital-sign monitoring.</p></div>
+          </li>
+          <li>
+            <span>03</span>
+            <div><h3>Decide</h3><p>Apply local rules with bounded setpoints, bounded command rates, manual override, and a neutral fallback.</p></div>
+          </li>
+          <li>
+            <span>04</span>
+            <div><h3>Transmit</h3><p>Send an infrared command using the learned AC interface. An emitted command is not treated as confirmed AC state.</p></div>
+          </li>
+        </ol>
+        <p class="ac-whitepaper-figure-note">Figure 1. Conceptual architecture, not a measured result. Status: Hypothesis / design target. Claim ID: HT-01.</p>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section" id="connectivity" aria-labelledby="connectivity-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">03 / CONTROL BOUNDARY</p>
+        <h2 id="connectivity-title">Local control is a scoped pathway, not a blanket privacy or uptime claim.</h2>
+      </div>
+      <div class="ac-whitepaper-section__body">
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--target">Hypothesis / design target</span>
+          <span>HT-02</span>
+        </div>
+        <dl class="ac-whitepaper-boundary-list">
+          <div><dt>Initial setup</dt><dd>Bluetooth is a proposed configuration pathway. Exact permissions, pairing authorization, and retained identifiers require a reviewed data-flow design.</dd></div>
+          <div><dt>Remote learning</dt><dd>The intended setup records supported IR commands from the existing AC remote. Compatibility must be demonstrated per model and command set.</dd></div>
+          <div><dt>Sensing and decision</dt><dd>The intended core loop runs on the device after configuration. This boundary does not include every future app, update, diagnostic, or support feature.</dd></div>
+          <div><dt>Network loss</dt><dd>Offline operation must be tested after setup through sensing, decision, command, reboot, and reconnection scenarios.</dd></div>
+          <div><dt>Data boundary</dt><dd>A future Bluetooth proximity feature may process a paired identifier and received signal strength. Storage, retention, deletion, reset behavior, sharing, and location permissions are not yet assigned.</dd></div>
+        </dl>
+        <p>Bluetooth received signal strength varies with device orientation, obstruction, radio conditions, and implementation. It should be treated as a coarse input and not the sole basis for a safety-relevant or irreversible action.<sup><a href="#ref-2" aria-label="Go to reference 2">2</a></sup></p>
+        <dl class="ac-whitepaper-claim-meta">
+          <div><dt>Scope</dt><dd>Proposed setup and local-control boundary</dd></div>
+          <div><dt>Revision</dt><dd>Target revision not yet assigned</dd></div>
+          <div><dt>Evidence</dt><dd>Reference 2 and planned evaluations</dd></div>
+          <div><dt>Review date</dt><dd>25 August 2026</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section ac-whitepaper-section--visual" id="sensing" aria-labelledby="sensing-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">04 / INTERFACE</p>
+        <h2 id="sensing-title">Sensing and infrared are system elements awaiting integrated validation.</h2>
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--target">Hypothesis / design target</span>
+          <span>HT-03</span>
+        </div>
+      </div>
+      <figure class="ac-whitepaper-product-figure">
+        <img src="assets/root-matte-technical-cutaway-v1.png" alt="Illustrative cutaway rendering of the proposed ROOT room controller enclosure and internal layout">
+        <figcaption>Figure 2. Illustrative product cutaway. It is not evidence of final components, layout, sensing accuracy, construction, or production readiness. Status: Hypothesis / design target. Claim ID: HT-03.</figcaption>
+      </figure>
+      <div class="ac-whitepaper-section__body ac-whitepaper-section__body--split">
+        <article>
+          <h3>Climate input</h3>
+          <p>Temperature and humidity are proposed control inputs. Part specifications and display resolution do not establish integrated system accuracy.</p>
+        </article>
+        <article>
+          <h3>Presence input</h3>
+          <p>The proposed signal is limited to room-control context. It must not be described as breathing, sleep, fall, health, or vital-sign monitoring.</p>
+        </article>
+        <article>
+          <h3>Infrared learning</h3>
+          <p>Learning must record supported commands without implying broad compatibility. Unknown, ambiguous, or incomplete state should produce a neutral outcome.</p>
+        </article>
+        <article>
+          <h3>Infrared transmission</h3>
+          <p>Reach depends on orientation, distance, line of sight, surfaces, emitter configuration, and the receiving AC. Coverage remains a test question.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section" id="placement" aria-labelledby="placement-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">05 / PLACEMENT</p>
+        <h2 id="placement-title">Placement changes what the device can sense and reach.</h2>
+      </div>
+      <div class="ac-whitepaper-section__body">
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--target">Hypothesis / design target</span>
+          <span>HT-04</span>
+        </div>
+        <p>Tabletop, nightstand, couch-side, desk-side, and wall-mounted arrangements are placement concepts, not equivalent operating modes. Each changes sampled air, exposure to drafts or heat sources, sensor obstruction, mounting stability, occupant proximity, and the IR path to the AC.</p>
+        <p>Placement guidance must therefore be tied to tested room and AC configurations. The user should retain access to manual AC controls when the recommended position cannot provide a reliable sensing or transmission path.</p>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section ac-whitepaper-section--evaluation" id="evaluation" aria-labelledby="evaluation-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">06 / EVALUATION</p>
+        <h2 id="evaluation-title">Report protocols before results.</h2>
+        <p>Every evaluation should identify the hardware and firmware revision, conditions, comparator, ground truth, sampling, repeated trials, primary outcome, acceptance rule, exclusions, uncertainty, and retained evidence artifact.</p>
+      </div>
+      <div class="ac-whitepaper-evaluation" aria-label="Planned evaluation matrix">
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-01</span></div>
+          <h3>Climate sensing</h3>
+          <p>Co-locate ROOT with a traceable reference logger. Report bias, mean absolute error, repeatability, sampling interval, stabilization time, and uncertainty.</p>
+        </article>
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-02</span></div>
+          <h3>Presence sensing</h3>
+          <p>Compare detections with timestamped ground truth across occupied, unoccupied, stationary, moving, obstructed, and false-trigger scenarios.</p>
+        </article>
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-03</span></div>
+          <h3>IR interoperability</h3>
+          <p>Test a declared sample of AC models and commands over repeated trials, distances, angles, and line-of-sight conditions. Report failures by model.</p>
+        </article>
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-04</span></div>
+          <h3>Offline operation</h3>
+          <p>Disable Wi-Fi and internet after setup. Exercise sensing, decisions, commands, reboot, and reconnection for a declared duration.</p>
+        </article>
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-05</span></div>
+          <h3>Setup</h3>
+          <p>Observe first-time users completing one defined flow. Report completion, assistance, retries, failure reasons, and timing distributions.</p>
+        </article>
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-06</span></div>
+          <h3>Power behavior</h3>
+          <p>Measure nominal and peak draw, supported input conditions, brownout and restart behavior, and recovered state.</p>
+        </article>
+        <article>
+          <div><span class="ac-whitepaper-status ac-whitepaper-status--planned">Planned evaluation</span><span>PE-07</span></div>
+          <h3>Room comfort stability</h3>
+          <p>Compare a declared baseline with ROOT under recorded room, placement, AC, outdoor, load, and occupancy conditions. Predefine deviation, overshoot, cycling, and humidity outcomes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section ac-whitepaper-section--limits" id="limitations" aria-labelledby="limitations-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">07 / BOUNDARIES</p>
+        <h2 id="limitations-title">A comfort controller with explicit limits.</h2>
+      </div>
+      <div class="ac-whitepaper-section__body">
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--disclosure">Controlled disclosure</span>
+          <span>CD-01</span>
+        </div>
+        <div class="ac-whitepaper-limit-list">
+          <article><h3>Intended use</h3><p>ROOT is intended for general room-comfort control. It is not a medical device and is not intended to diagnose, prevent, monitor, predict, mitigate, or treat disease, injury, disability, a physiological condition, sleep, or a vital sign.</p></article>
+          <article><h3>Safety role</h3><p>ROOT is not a safety-critical, emergency, or life-support controller. Users must retain the original AC remote and access to the AC's manual controls.</p></article>
+          <article><h3>Autonomous limits</h3><p>Bounded setpoints, bounded command rates, visible fault indication, manual override, and a neutral fallback remain design targets until implemented and tested.</p></article>
+          <article><h3>Failure conditions</h3><p>Validation must cover sensor faults, stale inputs, proximity loss, ambiguous IR state, blocked line of sight, AC non-response, power interruption, conflicting preferences, mounting failure, and optional-connectivity loss.</p></article>
+          <article><h3>Compatibility</h3><p>Behavior depends on AC hardware, room geometry, placement, obstruction, environmental conditions, power, firmware, and operating mode. No compatibility result is reported here.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section" id="company" aria-labelledby="company-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">08 / COMPANY</p>
+        <h2 id="company-title">Haptique Electronics is developing ROOT.</h2>
+      </div>
+      <div class="ac-whitepaper-section__body">
+        <div class="ac-whitepaper-claim-heading">
+          <span class="ac-whitepaper-status ac-whitepaper-status--disclosure">Controlled disclosure</span>
+          <span>CD-02</span>
+        </div>
+        <p><strong>Haptique Electronics Pvt. Ltd.</strong> is the company developing ROOT as a room-comfort product concept. ROOT is a product and brand, not a separate legal entity.</p>
+        <p>This revision intentionally omits third-party recognition and intellectual-property status. Those disclosures require verified identity, filing, scope, and approval records before inclusion.</p>
+        <a class="ac-whitepaper-contact" href="mailto:info@get-root.in">Contact the developer team <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section class="ac-whitepaper-section ac-whitepaper-section--references" id="references" aria-labelledby="references-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">09 / SOURCES</p>
+        <h2 id="references-title">References.</h2>
+      </div>
+      <ol class="ac-whitepaper-reference-list">
+        <li id="ref-1">
+          <p><strong>Human thermal responses to non-uniform cooling from intermittently operated split air conditioners.</strong> <em>Building and Environment</em>, volume 294, 2026.</p>
+          <a href="https://doi.org/10.1016/j.buildenv.2026.114379" target="_blank" rel="noreferrer">DOI 10.1016/j.buildenv.2026.114379 <span aria-hidden="true">↗</span></a>
+          <a href="#room-level-problem" aria-label="Return to the room-level problem section">Return to claim CB-01 ↑</a>
+        </li>
+        <li id="ref-2">
+          <p><strong>Bluetooth Low Energy Primer.</strong> Bluetooth SIG. Used for the limits and interpretation of Bluetooth radio measurements.</p>
+          <a href="https://www.bluetooth.com/bluetooth-le-primer/" target="_blank" rel="noreferrer">Bluetooth SIG primer <span aria-hidden="true">↗</span></a>
+          <a href="#connectivity" aria-label="Return to the connectivity section">Return to claim HT-02 ↑</a>
+        </li>
+      </ol>
+    </section>
+
+    <section class="ac-whitepaper-section ac-whitepaper-section--revision" id="revision-history" aria-labelledby="revision-title">
+      <div class="ac-whitepaper-section__heading">
+        <p class="ac-whitepaper-section-index">10 / CONTROL</p>
+        <h2 id="revision-title">Revision history.</h2>
+      </div>
+      <div class="ac-whitepaper-revision-row">
+        <span>D0.1</span>
+        <time datetime="2026-08-25">25 August 2026</time>
+        <span>Haptique Electronics Pvt. Ltd.</span>
+        <span>Reviewer: Not yet assigned</span>
+        <p>Initial developer-preview concept paper. Evidence cutoff: 25 August 2026. No prototype performance result is reported.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ac-whitepaper-footer">
+    <a class="ac-wordmark" href="#top" aria-label="Return to the top of the ROOT concept paper">ROOT</a>
+    <p>Companion web edition / D0.1</p>
+    <a href="mailto:info@get-root.in">info@get-root.in</a>
+  </footer>
+</body>
+</html>
