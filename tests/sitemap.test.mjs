@@ -57,8 +57,7 @@ assert.match(style, /\.ac-coming-soon-page\s*\{[^}]*overflow-x:hidden;[^}]*overf
 assert.match(style, /\.ac-coming-soon-discord\s*\{[^}]*top:[^;]+;[^}]*right:[^;]+;[^}]*color:var\(--ac-ink\);[^}]*background:transparent;[^}]*border-radius:0;/i, 'coming-soon Discord icon should be black, unboxed, and top-right');
 assert.match(style, /\.ac-coming-soon-discord\s*\{[^}]*width:56px;[^}]*height:56px;/i, 'coming-soon Discord icon should have a visible desktop tap target');
 assert.match(style, /\.ac-coming-soon-discord\s+svg\s*\{[^}]*width:40px;[^}]*height:40px;/i, 'coming-soon Discord mark should be prominent on mobile');
-assert.match(siteGate, /localhost|127\.0\.0\.1/i, 'site gate should allow local developer review');
-assert.match(siteGate, /coming-soon\.html/i, 'site gate should redirect public traffic to coming-soon');
+assert.doesNotMatch(siteGate, /location\.(replace|assign)|location\s*=/i, 'public visitors should not be redirected to the launch screen');
 for (const page of [home, sitemap, about, privacy]) {
   assert.match(page, /<script src="site-gate\.js"/i, 'public pages should load the site gate');
 }
