@@ -18,7 +18,7 @@ const publicFiles = [
 ];
 
 const publicAssets = [
-  'assets/prototypes/root-board-overview.jpg',
+  'assets/sketches/prototype/root-ld2420-pencil-unbranded.png',
   'assets/sketches/root-id-vents-button.png',
   'assets/sketches/root-id-concept-sheet.png',
   'assets/sketches/prototype/root-board-pencil-tidy-jumpers.png',
