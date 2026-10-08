@@ -110,6 +110,7 @@ test('production artifact excludes the local-only concept paper', async () => {
     'assets/acboss-sleep-slide1-freezing.jpg',
     'assets/acboss-sleep-slide2-sweating.jpg',
     'assets/acboss-sleep-slide3-autopilot.jpg',
+    'assets/prototypes/root-board-overview.jpg',
     'assets/renders/root-audience-arthritis.png',
     'assets/renders/root-audience-elders.png',
     'assets/renders/root-audience-kids.png',
