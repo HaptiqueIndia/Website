@@ -121,6 +121,7 @@ test('production artifact excludes the local-only concept paper', async () => {
     'assets/root-matte-product-pebble-vector.jpg',
     'assets/root-matte-technical-cutaway-v1.png',
     'assets/sketches/root-id-concept-sheet.png',
+    'assets/sketches/root-id-vents-button.png',
     'assets/sketches/prototype/root-board-pencil-tidy-jumpers.png',
     'assets/sketches/prototype/root-sensor-pencil-unbranded.png',
     'coming-soon.html',
