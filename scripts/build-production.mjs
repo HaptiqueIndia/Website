@@ -9,6 +9,7 @@ const publicFiles = [
   'index.html',
   'product-details.html',
   'about.html',
+  'progress.html',
   'sitemap.html',
   'privacy-policy.html',
   'coming-soon.html',
@@ -17,6 +18,9 @@ const publicFiles = [
 ];
 
 const publicAssets = [
+  'assets/sketches/root-id-concept-sheet.png',
+  'assets/sketches/prototype/root-board-pencil-tidy-jumpers.png',
+  'assets/sketches/prototype/root-sensor-pencil-unbranded.png',
   'assets/acboss-sleep-slide1-freezing.jpg',
   'assets/acboss-sleep-slide2-sweating.jpg',
   'assets/acboss-sleep-slide3-autopilot.jpg',

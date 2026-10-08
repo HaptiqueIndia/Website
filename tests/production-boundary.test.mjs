@@ -106,6 +106,7 @@ test('production artifact excludes the local-only concept paper', async () => {
 
   assert.deepEqual(await collectFiles(distRoot), [
     'about.html',
+    'progress.html',
     'assets/acboss-sleep-slide1-freezing.jpg',
     'assets/acboss-sleep-slide2-sweating.jpg',
     'assets/acboss-sleep-slide3-autopilot.jpg',
@@ -119,6 +120,9 @@ test('production artifact excludes the local-only concept paper', async () => {
     'assets/root-matte-product-handoff-editorial.png',
     'assets/root-matte-product-pebble-vector.jpg',
     'assets/root-matte-technical-cutaway-v1.png',
+    'assets/sketches/root-id-concept-sheet.png',
+    'assets/sketches/prototype/root-board-pencil-tidy-jumpers.png',
+    'assets/sketches/prototype/root-sensor-pencil-unbranded.png',
     'coming-soon.html',
     'index.html',
     'privacy-policy.html',
@@ -127,5 +131,5 @@ test('production artifact excludes the local-only concept paper', async () => {
     'site-gate.js',
     'sitemap.html',
     'style.css',
-  ]);
+  ].sort());
 });
