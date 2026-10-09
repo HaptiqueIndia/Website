@@ -32,6 +32,7 @@ const publicAssets = [
   'assets/renders/root-matte-product-angle.png',
   'assets/renders/root-matte-wall-mount-plants.png',
   'assets/root-favicon.svg',
+  'assets/licenses/bootstrap-icons.txt',
   'assets/root-matte-night-hero-v1.png',
   'assets/root-matte-product-handoff-editorial.png',
   'assets/root-matte-product-pebble-vector.jpg',

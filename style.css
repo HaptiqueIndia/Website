@@ -1924,6 +1924,11 @@ body.ac-home-page footer.ac-global-footer { background:#20201f; color:#f7f6f2; }
 .ac-global-footer__label { margin-bottom:10px; color:#ef9d8c; font-size:.68rem; font-weight:700; letter-spacing:.14em; }
 .ac-global-footer__main nav a { color:#f7f6f2; font-size:.88rem; text-decoration:none; }
 .ac-global-footer__main nav a:hover,.ac-global-footer__main nav a:focus-visible { color:#ef9d8c; }
+.ac-global-footer__socials { display:flex; flex-wrap:wrap; gap:12px; margin-top:8px; }
+.ac-global-footer__main nav .ac-social-badge { display:inline-flex; align-items:center; justify-content:center; width:44px; min-height:44px; border:1px solid oklch(97% .007 75 / .3); border-radius:8px; }
+.ac-social-badge svg { display:block; width:22px; height:22px; }
+.ac-global-footer .ac-social-badge:hover,.ac-global-footer .ac-social-badge:focus-visible { border-color:currentColor; }
+.ac-global-footer a.ac-social-badge:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
 .ac-global-footer__bottom { display:flex; align-items:center; justify-content:space-between; gap:24px; max-width:1440px; margin:clamp(54px,8vw,100px) auto 0; padding-top:18px; border-top:1px solid rgba(247,246,242,.18); color:#9e9991; font-size:.76rem; }
 .ac-global-footer__bottom span:last-child { color:#c5c0b7; }
 

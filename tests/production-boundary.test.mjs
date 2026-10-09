@@ -130,6 +130,7 @@ test('production artifact publishes the footer PDF and excludes private paper so
     'assets/acboss-sleep-slide2-sweating.jpg',
     'assets/acboss-sleep-slide3-autopilot.jpg',
     'assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf',
+    'assets/licenses/bootstrap-icons.txt',
     'assets/sketches/prototype/root-ld2420-pencil-unbranded.png',
     'assets/renders/root-audience-arthritis.png',
     'assets/renders/root-audience-elders.png',
