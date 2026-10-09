@@ -118,7 +118,7 @@ test('production artifact publishes the footer PDF and excludes private paper so
     const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? '';
     assert.match(
       footer,
-      /<a href="assets\/documents\/ROOT-Technical-Concept-Paper-D0\.1\.pdf">White paper \(PDF\)<\/a>/,
+      /<a href="assets\/documents\/ROOT-Technical-Concept-Paper-D0\.1\.pdf">White paper<\/a>/,
       `${page} footer must link to the published PDF`,
     );
   }

@@ -2,7 +2,7 @@
 
 ## Publication update — 9 October 2026
 
-The user authorized public access to the existing D0.1 PDF through the website footer. The production build now publishes the canonical PDF at `assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf`, linked as `White paper (PDF)` from the shared footer. This supersedes the PDF exclusion and footer-link restrictions below. The editable DOCX, companion HTML reader, and repository documentation remain excluded from production; the paper's evidence classifications and revision metadata remain unchanged.
+The user authorized public access to the existing D0.1 PDF through the website footer. The production build now publishes the canonical PDF at `assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf`, linked as `White paper` from the shared footer. This supersedes the PDF exclusion and footer-link restrictions below. The editable DOCX, companion HTML reader, and repository documentation remain excluded from production; the paper's evidence classifications and revision metadata remain unchanged.
 
 ## Purpose
 
