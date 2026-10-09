@@ -38,7 +38,10 @@ const publicAssets = [
   'assets/root-matte-technical-cutaway-v1.png',
 ];
 
-for (const relativePath of [...publicFiles, 'style.css', ...publicAssets]) {
+const paperSource = 'output/pdf/ROOT-Technical-Concept-Paper-D0.1.pdf';
+const paperDestination = 'assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf';
+
+for (const relativePath of [...publicFiles, 'style.css', ...publicAssets, paperSource]) {
   try {
     await access(join(repositoryRoot, relativePath));
   } catch {
@@ -58,6 +61,9 @@ for (const relativePath of publicAssets) {
   await mkdir(dirname(destination), { recursive: true });
   await copyFile(join(repositoryRoot, relativePath), destination);
 }
+
+await mkdir(dirname(join(outputRoot, paperDestination)), { recursive: true });
+await copyFile(join(repositoryRoot, paperSource), join(outputRoot, paperDestination));
 
 const localOnlyStylesMarker = '/* ROOT technical concept paper */';
 const sourceStyles = await readFile(join(repositoryRoot, 'style.css'), 'utf8');

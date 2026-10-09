@@ -1,5 +1,9 @@
 # ROOT Technical Concept Paper Publication Design
 
+## Publication update — 9 October 2026
+
+The user authorized public access to the existing D0.1 PDF through the website footer. The production build now publishes the canonical PDF at `assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf`, linked as `White paper (PDF)` from the shared footer. This supersedes the PDF exclusion and footer-link restrictions below. The editable DOCX, companion HTML reader, and repository documentation remain excluded from production; the paper's evidence classifications and revision metadata remain unchanged.
+
 ## Purpose
 
 Create a canonical engineering concept paper for local or explicitly authorized review that explains ROOT's proposed room-level, local-first approach to split-AC comfort. The primary publication is a stable, print-ready PDF generated from an editable DOCX source. A companion HTML reader may help engineering reviewers, partners, and early collaborators navigate the same material, but it is not the authoritative publication.

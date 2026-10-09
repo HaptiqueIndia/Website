@@ -70,7 +70,7 @@ test('current committed head carries the production builder and companion CSS co
   assert.match(committedStyle.stdout, /\/\* ROOT technical concept paper \*\/[\s\S]*\.ac-whitepaper-page/);
 });
 
-test('production artifact excludes the local-only concept paper', async () => {
+test('production artifact publishes the footer PDF and excludes private paper sources', async () => {
   const build = spawnSync(process.execPath, ['scripts/build-production.mjs'], {
     cwd: repositoryRoot,
     encoding: 'utf8',
@@ -99,10 +99,29 @@ test('production artifact excludes the local-only concept paper', async () => {
   assert.doesNotMatch(outputText, /ROOT technical concept paper/i);
   assert.doesNotMatch(outputText, /ac-whitepaper-/i);
   assert.doesNotMatch(outputText, /A local architecture for room-level AC comfort/i);
-  assert.doesNotMatch(outputText, /ROOT-Technical-Concept-Paper-D0\.1\.(?:pdf|docx)/i);
+  assert.doesNotMatch(outputText, /ROOT-Technical-Concept-Paper-D0\.1\.docx/i);
   assert.doesNotMatch(outputText, /ROOT-TCP-001/i);
   assert.doesNotMatch(outputText, /Companion web edition/i);
   assert.equal(await exists(join(distRoot, 'output')), false);
+
+  const publicPaperPath = 'assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf';
+  const publishedPaper = await readFile(join(distRoot, publicPaperPath));
+  assert.equal(publishedPaper.subarray(0, 5).toString(), '%PDF-');
+  assert.deepEqual(
+    publishedPaper,
+    await readFile(join(repositoryRoot, 'output/pdf/ROOT-Technical-Concept-Paper-D0.1.pdf')),
+    'published PDF must match the canonical revision',
+  );
+
+  for (const page of ['index.html', 'product-details.html', 'about.html', 'progress.html', 'privacy-policy.html', 'sitemap.html']) {
+    const html = await readFile(join(distRoot, page), 'utf8');
+    const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0] ?? '';
+    assert.match(
+      footer,
+      /<a href="assets\/documents\/ROOT-Technical-Concept-Paper-D0\.1\.pdf">White paper \(PDF\)<\/a>/,
+      `${page} footer must link to the published PDF`,
+    );
+  }
 
   assert.deepEqual(await collectFiles(distRoot), [
     'about.html',
@@ -110,6 +129,7 @@ test('production artifact excludes the local-only concept paper', async () => {
     'assets/acboss-sleep-slide1-freezing.jpg',
     'assets/acboss-sleep-slide2-sweating.jpg',
     'assets/acboss-sleep-slide3-autopilot.jpg',
+    'assets/documents/ROOT-Technical-Concept-Paper-D0.1.pdf',
     'assets/sketches/prototype/root-ld2420-pencil-unbranded.png',
     'assets/renders/root-audience-arthritis.png',
     'assets/renders/root-audience-elders.png',
